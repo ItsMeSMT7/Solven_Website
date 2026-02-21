@@ -8,6 +8,7 @@ import Stats from "./components/Stats";
 import Testimonials from "./components/Testimonials";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
+import ContactUs from "./components/ContactUs";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
       <Stats />
       <div className="divider-line" />
       <Testimonials />
+      <ContactUs /> 
       <CTA />
       <Footer />
     </div>

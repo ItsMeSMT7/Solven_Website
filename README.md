@@ -1,16 +1,58 @@
-# React + Vite
+# Sarvam AI Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional, high-performance landing page template built for AI and technology agencies. This project showcases a modern, responsive design with advanced animations and interactive elements.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application is a single-page React website designed to convert visitors into clients. It features a sophisticated UI with glassmorphism effects, dynamic data visualizations, and a seamless user experience across all devices.
 
-## React Compiler
+### Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Immersive Hero Section:** Captures attention with rotating headlines and a simulated, animated dashboard environment.
+-   **Interactive Components:** Features a code-preview demo, expandable service cards, and hover-responsive elements.
+-   **Advanced Animations:** Powered by Framer Motion to deliver smooth scroll reveals, staggered entry effects, and complex orbital animations.
+-   **Responsive Navigation:** A smart navbar that changes appearance on scroll and offers a fluid mobile menu experience.
+-   **Social Proof:** Dedicated sections for client logos, statistical counters, and customer testimonials.
 
-## Expanding the ESLint configuration
+## Technology Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   **Core:** React, Vite
+-   **Styling:** Tailwind CSS
+-   **Animation:** Framer Motion
+-   **Icons:** Lucide React
+
+## Project Structure
+
+The codebase is organized for scalability, with self-contained components located in the `src/components` directory.
+
+```text
+src/
+├── components/
+│   ├── Navbar.jsx        # Top navigation with scroll effects
+│   ├── Hero.jsx          # Main landing area with animations
+│   ├── Clients.jsx       # Partner logo strip
+│   ├── Features.jsx      # Grid layout of platform features
+│   ├── ProductDemo.jsx   # Developer experience showcase
+│   ├── Stats.jsx         # Animated metric counters
+│   ├── Services.jsx      # Service offerings
+│   ├── About.jsx         # Company information and orbital diagram
+│   ├── Testimonials.jsx  # User reviews and feedback
+│   ├── CTA.jsx           # Final call-to-action
+│   └── Footer.jsx        # Site footer
+├── App.jsx               # Main layout component
+└── main.jsx              # Application entry point
+```
+
+## Getting Started
+
+Follow these steps to set up the project locally:
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```

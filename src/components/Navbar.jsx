@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const links = [
-  { label: "Platform", href: "#services" },
-  { label: "Solutions", href: "#about" },
-  { label: "Customers", href: "#testimonials" },
-  { label: "Docs", href: "#docs" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Services", href: "#services" },
+  { label: "Products", href: "#testimonials" },
+  { label: "About", href: "#about" },
+  { label: "Contact us", href: "#contactus" },
+  // { label: "Pricing", href: "#pricing" },
 ];
 
 export default function Navbar() {
@@ -173,7 +173,7 @@ export default function Navbar() {
               flexShrink: 0,
             }}
           >
-            <a
+            {/* <a
               href="#"
               style={{
                 fontSize: 14,
@@ -198,7 +198,7 @@ export default function Navbar() {
               }}
             >
               Log in
-            </a>
+            </a> */}
             <button
               style={{
                 padding: "9px 24px",

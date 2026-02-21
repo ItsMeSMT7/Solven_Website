@@ -1,46 +1,47 @@
-# Sarvam AI Landing Page
+# Solven - Enterprise Technology Partner
 
-A professional, high-performance landing page template built for AI and technology agencies. This project showcases a modern, responsive design with advanced animations and interactive elements.
+Solven is a modern, high-performance landing page template designed for a premier digital transformation agency. This project showcases a sophisticated React-based UI that highlights services in Custom Software, AI & Machine Learning, and Cloud Infrastructure.
 
 ## Project Overview
 
-This application is a single-page React website designed to convert visitors into clients. It features a sophisticated UI with glassmorphism effects, dynamic data visualizations, and a seamless user experience across all devices.
+This application serves as the digital storefront for Solven, designed to convert enterprise visitors into clients. It features a polished, responsive design utilizing glassmorphism, complex data visualizations, and seamless animations to convey technical expertise and reliability.
 
 ### Key Features
 
--   **Immersive Hero Section:** Captures attention with rotating headlines and a simulated, animated dashboard environment.
--   **Interactive Components:** Features a code-preview demo, expandable service cards, and hover-responsive elements.
--   **Advanced Animations:** Powered by Framer Motion to deliver smooth scroll reveals, staggered entry effects, and complex orbital animations.
--   **Responsive Navigation:** A smart navbar that changes appearance on scroll and offers a fluid mobile menu experience.
--   **Social Proof:** Dedicated sections for client logos, statistical counters, and customer testimonials.
+-   **Dynamic Hero Section:** Features rotating headlines and an animated, interactive dashboard mockup demonstrating platform capabilities.
+-   **Service Showcase:** Detailed cards for core offerings including AI/ML, Cloud Infrastructure, and Cybersecurity.
+-   **Developer-Centric Demo:** A split-screen code visualization section highlighting the ease of integration.
+-   **Interactive Orbital Diagram:** A unique "About Us" visualization connecting core competencies like DevOps, IoT, and Web3.
+-   **Social Proof:** Integrated sections for client logos, statistical achievements, and customer testimonials.
+-   **Responsive Design:** Fully adaptive layout with a mobile-optimized navigation menu.
 
 ## Technology Stack
 
--   **Core:** React, Vite
+-   **Frontend Framework:** React (Vite)
 -   **Styling:** Tailwind CSS
--   **Animation:** Framer Motion
+-   **Animations:** Framer Motion
 -   **Icons:** Lucide React
 
 ## Project Structure
 
-The codebase is organized for scalability, with self-contained components located in the `src/components` directory.
+The project follows a component-based architecture for maintainability and scalability.
 
 ```text
 src/
 ├── components/
-│   ├── Navbar.jsx        # Top navigation with scroll effects
-│   ├── Hero.jsx          # Main landing area with animations
-│   ├── Clients.jsx       # Partner logo strip
-│   ├── Features.jsx      # Grid layout of platform features
-│   ├── ProductDemo.jsx   # Developer experience showcase
-│   ├── Stats.jsx         # Animated metric counters
-│   ├── Services.jsx      # Service offerings
-│   ├── About.jsx         # Company information and orbital diagram
-│   ├── Testimonials.jsx  # User reviews and feedback
-│   ├── CTA.jsx           # Final call-to-action
-│   └── Footer.jsx        # Site footer
-├── App.jsx               # Main layout component
-└── main.jsx              # Application entry point
+│   ├── Navbar.jsx        # Smart navigation with scroll-aware styling
+│   ├── Hero.jsx          # Primary landing area with dashboard animations
+│   ├── Clients.jsx       # Trusted partner logo strip
+│   ├── Features.jsx      # Grid layout of platform capabilities
+│   ├── ProductDemo.jsx   # Interactive code vs. text comparison
+│   ├── Stats.jsx         # Animated business metric counters
+│   ├── Services.jsx      # Detailed service offering cards
+│   ├── About.jsx         # Company info with animated orbital diagram
+│   ├── Testimonials.jsx  # Client success stories
+│   ├── CTA.jsx           # Final call-to-action section
+│   └── Footer.jsx        # Site footer and links
+├── App.jsx               # Main application layout
+└── main.jsx              # Entry point
 ```
 
 ## Getting Started

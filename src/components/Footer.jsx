@@ -72,7 +72,7 @@ export default function Footer() {
                 display: "flex", alignItems: "center", gap: 8,
                 fontSize: 13, color: "#888",
               }}>
-                <MapPin size={14} /> Bangalore, India
+                <MapPin size={14} /> Pune, India
               </span>
             </div>
 

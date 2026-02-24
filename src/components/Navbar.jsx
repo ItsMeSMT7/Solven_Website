@@ -1,20 +1,19 @@
-// FILE: src/components/Navbar.jsx
-// REPLACE YOUR ENTIRE Navbar.jsx WITH THIS
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const links = [
-  { label: "Services", href: "#services" },
-  { label: "Products", href: "#testimonials" },
-  { label: "About", href: "#about" },
-  { label: "Contact us", href: "#contactus" },
-  // { label: "Pricing", href: "#pricing" },
+  { label: "Services", href: "/services" },
+  { label: "Products", href: "/products" },
+  { label: "About", href: "/about" },
+  { label: "Contact us", href: "/#contactus" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
@@ -25,6 +24,50 @@ export default function Navbar() {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
   }, [open]);
+
+  // Handle hash-based navigation from other pages
+  useEffect(() => {
+    if (location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(location.hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [location]);
+
+  const isActive = (href) => {
+    if (href.startsWith("/#")) return location.pathname === "/" && location.hash === href.slice(1);
+    return location.pathname === href;
+  };
+
+  const handleNavClick = (href, e) => {
+    if (href.startsWith("/#") && location.pathname === "/") {
+      e.preventDefault();
+      const el = document.querySelector(href.slice(1));
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+    setOpen(false);
+  };
+
+  const renderLink = (l, children, style, handlers = {}) => {
+    if (l.href.startsWith("/#")) {
+      return (
+        <Link
+          to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
+          style={style}
+          onClick={(e) => handleNavClick(l.href, e)}
+          {...handlers}
+        >
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <Link to={l.href} style={style} onClick={() => setOpen(false)} {...handlers}>
+        {children}
+      </Link>
+    );
+  };
 
   return (
     <>
@@ -42,7 +85,6 @@ export default function Navbar() {
           transition: "padding 0.4s cubic-bezier(0.22,1,0.36,1)",
         }}
       >
-        {/* ═══ PILL-SHAPED NAVBAR CONTAINER ═══ */}
         <div
           style={{
             maxWidth: 1180,
@@ -66,9 +108,9 @@ export default function Navbar() {
             transition: "all 0.45s cubic-bezier(0.22,1,0.36,1)",
           }}
         >
-          {/* ── Logo ── */}
-          <a
-            href="#"
+          {/* Logo */}
+          <Link
+            to="/"
             style={{
               display: "flex",
               alignItems: "center",
@@ -110,96 +152,77 @@ export default function Navbar() {
             >
               Solven
             </span>
-          </a>
+          </Link>
 
-          {/* ── Desktop Nav Links ── */}
+          {/* Desktop Nav */}
           <nav
             className="hidden lg:flex"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-            }}
+            style={{ display: "flex", alignItems: "center", gap: 4 }}
           >
-            {links.map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                style={{
-                  padding: "7px 16px",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: scrolled
-                    ? "rgba(255,255,255,0.6)"
-                    : "var(--ink-secondary)",
-                  borderRadius: 100,
-                  transition: "all 0.3s ease",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                  position: "relative",
-                }}
-                onMouseEnter={(e) => {
-                  if (scrolled) {
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-                  } else {
-                    e.currentTarget.style.color = "var(--accent)";
-                    e.currentTarget.style.background = "var(--accent-bg)";
-                  }
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                  if (scrolled) {
-                    e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-                  } else {
-                    e.currentTarget.style.color = "var(--ink-secondary)";
-                  }
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) => {
+              const active = isActive(l.href);
+              return (
+                <Link
+                  key={l.label}
+                  to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
+                  onClick={(e) => handleNavClick(l.href, e)}
+                  style={{
+                    padding: "7px 16px",
+                    fontSize: 14,
+                    fontWeight: active ? 700 : 500,
+                    color: scrolled
+                      ? active
+                        ? "#fff"
+                        : "rgba(255,255,255,0.6)"
+                      : active
+                      ? "var(--accent)"
+                      : "var(--ink-secondary)",
+                    borderRadius: 100,
+                    transition: "all 0.3s ease",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    background: active
+                      ? scrolled
+                        ? "rgba(255,255,255,0.1)"
+                        : "var(--accent-bg)"
+                      : "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!active) {
+                      if (scrolled) {
+                        e.currentTarget.style.color = "#fff";
+                        e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                      } else {
+                        e.currentTarget.style.color = "var(--accent)";
+                        e.currentTarget.style.background = "var(--accent-bg)";
+                      }
+                    }
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) {
+                      e.currentTarget.style.color = scrolled
+                        ? "rgba(255,255,255,0.6)"
+                        : "var(--ink-secondary)";
+                      e.currentTarget.style.background = "transparent";
+                    }
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* ── Desktop CTA ── */}
+          {/* Desktop CTA */}
           <div
             className="hidden lg:flex"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexShrink: 0,
-            }}
+            style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}
           >
-            {/* <a
-              href="#"
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: scrolled ? "rgba(255,255,255,0.7)" : "var(--ink-secondary)",
-                padding: "7px 16px",
-                borderRadius: 100,
-                transition: "all 0.3s ease",
-                textDecoration: "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = scrolled ? "#fff" : "var(--ink)";
-                e.currentTarget.style.background = scrolled
-                  ? "rgba(255,255,255,0.08)"
-                  : "var(--cream)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = scrolled
-                  ? "rgba(255,255,255,0.7)"
-                  : "var(--ink-secondary)";
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              Log in
-            </a> */}
-            <button
+            <Link
+              to="/#contactus"
+              onClick={(e) => handleNavClick("/#contactus", e)}
               style={{
                 padding: "9px 24px",
                 fontSize: 13,
@@ -207,14 +230,12 @@ export default function Navbar() {
                 borderRadius: 100,
                 border: "none",
                 cursor: "pointer",
-                background: scrolled
-                  ? "#fff"
-                  : "var(--accent)",
-                color: scrolled
-                  ? "var(--ink)"
-                  : "#fff",
+                background: scrolled ? "#fff" : "var(--accent)",
+                color: scrolled ? "var(--ink)" : "#fff",
                 transition: "all 0.3s ease",
                 whiteSpace: "nowrap",
+                textDecoration: "none",
+                display: "inline-block",
               }}
               onMouseEnter={(e) => {
                 if (scrolled) {
@@ -239,10 +260,10 @@ export default function Navbar() {
               }}
             >
               Get Started
-            </button>
+            </Link>
           </div>
 
-          {/* ── Mobile Toggle ── */}
+          {/* Mobile Toggle */}
           <button
             onClick={() => setOpen(!open)}
             className="lg:hidden"
@@ -261,7 +282,7 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* ═══ Mobile Fullscreen Menu ═══ */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -289,24 +310,28 @@ export default function Navbar() {
               }}
             >
               {links.map((l, i) => (
-                <motion.a
+                <motion.div
                   key={l.label}
-                  href={l.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06 }}
-                  onClick={() => setOpen(false)}
-                  style={{
-                    fontFamily: "var(--serif)",
-                    fontSize: 28,
-                    padding: "14px 0",
-                    borderBottom: "1px solid var(--border-light)",
-                    color: "var(--ink)",
-                    textDecoration: "none",
-                  }}
                 >
-                  {l.label}
-                </motion.a>
+                  <Link
+                    to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
+                    onClick={(e) => handleNavClick(l.href, e)}
+                    style={{
+                      fontFamily: "var(--serif)",
+                      fontSize: 28,
+                      padding: "14px 0",
+                      borderBottom: "1px solid var(--border-light)",
+                      color: "var(--ink)",
+                      textDecoration: "none",
+                      display: "block",
+                    }}
+                  >
+                    {l.label}
+                  </Link>
+                </motion.div>
               ))}
             </nav>
             <motion.div
@@ -320,12 +345,14 @@ export default function Navbar() {
                 gap: 12,
               }}
             >
-              <button className="btn-fill" style={{ width: "100%", fontSize: 16 }}>
+              <Link
+                to="/#contactus"
+                onClick={(e) => handleNavClick("/#contactus", e)}
+                className="btn-fill"
+                style={{ width: "100%", fontSize: 16, textAlign: "center", textDecoration: "none" }}
+              >
                 Get Started
-              </button>
-              <button className="btn-line" style={{ width: "100%", fontSize: 16 }}>
-                Log in
-              </button>
+              </Link>
             </motion.div>
           </motion.div>
         )}

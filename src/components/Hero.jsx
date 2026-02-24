@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-const words = ["Innovation", "Growth", "Impact", "Scale"];
+const words = ["Growth", "Impact", "Scale"];
 
 const dashboards = [
   {
@@ -185,7 +185,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Trust line */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+          {/* <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
             style={{ marginTop: 44, display: "flex", alignItems: "center", gap: 12, justifyContent: "center" }}
           >
             <div style={{ display: "flex" }}>
@@ -205,7 +205,7 @@ export default function Hero() {
               </div>
               <span style={{ fontSize: 12, color: "var(--ink-muted)" }}>Trusted by 200+ enterprises</span>
             </div>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* ═══ DASHBOARD CAROUSEL ═══ */}

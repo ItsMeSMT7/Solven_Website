@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+
+const API_URL = "https://solven.in/api/contact.php";
+
 import {
   Mail,
   Phone,
@@ -24,7 +27,7 @@ const contactInfo = [
     icon: Phone,
     label: "Call Us",
     value: "+91 80 4567 8900",
-    sub: "Mon–Fri, 9 AM – 6 PM IST",
+    sub: "Mon – Sat, 9 AM – 6 PM IST",
     color: "#0E8A7D",
     bg: "#F0FDFA",
     href: "tel:+918045678900",
@@ -32,7 +35,7 @@ const contactInfo = [
   {
     icon: MapPin,
     label: "Visit Us",
-    value: "Bangalore, India",
+    value: "Pune, India",
     sub: "HSR Layout, Sector 2",
     color: "#2D6BE4",
     bg: "#EFF6FF",
@@ -41,7 +44,7 @@ const contactInfo = [
   {
     icon: Clock,
     label: "Business Hours",
-    value: "Mon – Fri",
+    value: "Mon – Sat",
     sub: "9:00 AM – 6:00 PM IST",
     color: "#7048D6",
     bg: "#F5F3FF",
@@ -80,21 +83,45 @@ export default function ContactUs() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Replace with actual form submission logic
-    console.log("Form submitted:", form);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to send message");
+    }
+
     setSubmitted(true);
+    setForm({ name: "", email: "", subject: "", message: "" });
+
     setTimeout(() => {
       setSubmitted(false);
-      setForm({ name: "", email: "", subject: "", message: "" });
     }, 4000);
-  };
+  } catch (err) {
+    setError(err.message || "Network error");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getFocusStyle = (field) => ({
     ...inputBase,
@@ -417,40 +444,49 @@ export default function ContactUs() {
 
                   {/* Submit */}
                   <motion.button
-                    type="submit"
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 10,
-                      padding: "16px 32px",
-                      fontSize: 15,
-                      fontWeight: 700,
-                      fontFamily: "var(--sans)",
-                      borderRadius: 14,
-                      border: "none",
-                      cursor: "pointer",
-                      background:
-                        "linear-gradient(135deg, var(--accent), #c44a1e)",
-                      color: "#fff",
-                      transition: "all 0.35s ease",
-                      boxShadow: "0 4px 16px rgba(211,85,40,0.2)",
-                      width: "100%",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow =
-                        "0 8px 32px rgba(211,85,40,0.35)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 16px rgba(211,85,40,0.2)";
-                    }}
-                  >
-                    Send Message
-                    <Send size={16} />
-                  </motion.button>
+  type="submit"
+  disabled={loading}
+  whileHover={{ y: -2 }}
+  whileTap={{ scale: 0.98 }}
+  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    padding: "16px 32px",
+    fontSize: 15,
+    fontWeight: 700,
+    fontFamily: "var(--sans)",
+    borderRadius: 14,
+    border: "none",
+    cursor: loading ? "not-allowed" : "pointer",
+    background: "linear-gradient(135deg, var(--accent), #c44a1e)",
+    color: "#fff",
+    transition: "all 0.35s ease",
+    boxShadow: "0 4px 16px rgba(211,85,40,0.2)",
+    width: "100%",
+    opacity: loading ? 0.7 : 1,
+  }}
+  onMouseEnter={(e) => {
+    if (!loading) {
+      e.currentTarget.style.boxShadow =
+        "0 8px 32px rgba(211,85,40,0.35)";
+    }
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.boxShadow =
+      "0 4px 16px rgba(211,85,40,0.2)";
+  }}
+>
+  {loading ? "Sending..." : "Send Message"}
+  {!loading && <Send size={16} />}
+</motion.button>
+
+{error && (
+  <div style={{ color: "#c0392b", fontSize: 13 }}>
+    {error}
+  </div>
+)}
                 </form>
               )}
             </div>

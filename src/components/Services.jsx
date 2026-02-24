@@ -96,8 +96,8 @@ export default function Services() {
                 <div style={{ padding: 32, position: "relative", zIndex: 2 }}>
                   {/* Icon */}
                   <motion.div
-                    animate={isHovered ? { scale: 1.15, rotate: -8, y: -4 } : { scale: 1, rotate: 0, y: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    // animate={isHovered ? { scale: 1.15, rotate: -8, y: -4 } : { scale: 1, rotate: 0, y: 0 }}
+                    // transition={{ type: "spring", stiffness: 400, damping: 20 }}
                     style={{
                       width: 52, height: 52, borderRadius: 14,
                       background: isHovered ? svc.gradient : svc.bg,

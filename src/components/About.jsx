@@ -2,13 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 
-/* ── Orbit Data ── */
-const orbitItems = [
+/* ── Orbit Data — split into inner ring & outer ring ── */
+const innerRingItems = [
   { label: "AI/ML", color: "#D35528" },
   { label: "Cloud", color: "#2D6BE4" },
   { label: "DevOps", color: "#0E8A7D" },
   { label: "Security", color: "#7048D6" },
   { label: "Mobile", color: "#E8A317" },
+];
+
+const outerRingItems = [
   { label: "Data", color: "#DC2626" },
   { label: "IoT", color: "#059669" },
   { label: "Web3", color: "#8B5CF6" },
@@ -16,9 +19,26 @@ const orbitItems = [
   { label: "SaaS", color: "#D946EF" },
 ];
 
-const ORBIT_RADIUS = 42;
-const ITEM_COUNT = orbitItems.length;
-const PARTICLE_COUNT = 220;
+const PARTICLE_COUNT = 240;
+
+/*
+  3 circles (from CSS inset values):
+    innermost  → inset 35%  → radius = 15% from center
+    middle     → inset 20%  → radius = 30% from center
+    outermost  → inset 6%   → radius = 44% from center
+
+  Particles home:  inside innermost circle (radius ≤ 15%)
+  Inner orbit:     moves along middle circle  (radius = 30%)
+  Outer orbit:     moves along outer circle   (radius = 44%)
+  Spread limit:    particles fill up to outer circle (radius ≤ 44%)
+*/
+
+const INNER_CIRCLE_R = 15;   // % — innermost circle radius (particles home)
+const MIDDLE_CIRCLE_R = 30;  // % — middle circle radius (inner orbit items)
+const OUTER_CIRCLE_R = 44;   // % — outer circle radius (outer orbit items)
+
+const INNER_SPEED = 0.18;    // rad/s for inner ring
+const OUTER_SPEED = 0.12;    // rad/s for outer ring (slower, looks natural)
 
 const dotColors = [
   "#D35528", "#2D6BE4", "#0E8A7D", "#7048D6",
@@ -54,64 +74,60 @@ function ParticleField({ isHovered, containerSize }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
+    // ═══ USE ACTUAL CANVAS CLIENT SIZE FOR PERFECT CENTERING ═══
+    const actualW = canvas.clientWidth;
+    const actualH = canvas.clientHeight;
+
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = containerSize * dpr;
-    canvas.height = containerSize * dpr;
-    canvas.style.width = containerSize + "px";
-    canvas.style.height = containerSize + "px";
+    canvas.width = actualW * dpr;
+    canvas.height = actualH * dpr;
     ctx.scale(dpr, dpr);
 
-    // ═══ TRUE CENTER ═══
-    const cx = containerSize / 2;
-    const cy = containerSize / 2;
+    // ═══ TRUE VISUAL CENTER OF THE CANVAS ═══
+    const cx = actualW / 2;
+    const cy = actualH / 2;
+    const size = Math.min(actualW, actualH);
 
-    // ── Default clustered radius — visible sphere ──
-    const homeR = containerSize * 0.15;
+    // Particles clustered inside innermost circle
+    const homeR = size * (INNER_CIRCLE_R / 100);
 
-    // ── Spread boundaries — stays inside orbit ring ──
-    const spreadMinR = containerSize * 0.12;
-    const spreadMaxR = containerSize * 0.37;
+    // Spread fills up to outer circle
+    const spreadMaxR = size * (OUTER_CIRCLE_R / 100);
 
-    // ═══ Create particles around TRUE center ═══
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
-      // Home: arranged as a visible sphere cluster at center
+      // Home: tightly packed at TRUE center
       const hAngle = Math.random() * Math.PI * 2;
-      const hDist = Math.pow(Math.random(), 0.5) * homeR;
+      const hDist = Math.pow(Math.random(), 0.45) * homeR;
       const homeX = cx + Math.cos(hAngle) * hDist;
       const homeY = cy + Math.sin(hAngle) * hDist;
 
-      // Spread: scattered outward
+      // Spread: distributed across all 3 circles from TRUE center
       const sAngle = Math.random() * Math.PI * 2;
-      const sDist = spreadMinR + Math.random() * (spreadMaxR - spreadMinR);
+      const sDist = Math.pow(Math.random(), 0.6) * spreadMaxR;
       const spreadX = cx + Math.cos(sAngle) * sDist;
       const spreadY = cy + Math.sin(sAngle) * sDist;
 
       return {
-        homeX,
-        homeY,
-        spreadX,
-        spreadY,
-        x: homeX,
-        y: homeY,
-        size: 1.5 + Math.random() * 3,
-        baseOpacity: 0.5 + Math.random() * 0.5,
+        homeX, homeY, spreadX, spreadY,
+        x: homeX, y: homeY,
+        size: 1.8 + Math.random() * 3.5,
+        baseOpacity: 0.55 + Math.random() * 0.45,
         color: dotColors[Math.floor(Math.random() * dotColors.length)],
-        speed: 0.018 + Math.random() * 0.035,
+        speed: 0.016 + Math.random() * 0.032,
         oscAngle: Math.random() * Math.PI * 2,
-        oscSpeed: 0.004 + Math.random() * 0.01,
-        oscAmp: 1 + Math.random() * 3,
+        oscSpeed: 0.003 + Math.random() * 0.008,
+        oscAmp: 0.8 + Math.random() * 2.5,
         pulsePhase: Math.random() * Math.PI * 2,
       };
     });
 
-    const LINE_DIST = containerSize * 0.085;
+    const LINE_DIST = size * 0.075;
 
     const draw = () => {
-      ctx.clearRect(0, 0, containerSize, containerSize);
+      ctx.clearRect(0, 0, actualW, actualH);
       const spread = hoveredRef.current;
       const particles = particlesRef.current;
 
-      // ── Update & draw each particle ──
       particles.forEach((p) => {
         const tX = spread ? p.spreadX : p.homeX;
         const tY = spread ? p.spreadY : p.homeY;
@@ -123,21 +139,31 @@ function ParticleField({ isHovered, containerSize }) {
         p.x += (tX + ox - p.x) * p.speed;
         p.y += (tY + oy - p.y) * p.speed;
 
+        // Clamp inside outer circle from TRUE center
+        const dx = p.x - cx;
+        const dy = p.y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > spreadMaxR) {
+          const scale = spreadMaxR / dist;
+          p.x = cx + dx * scale;
+          p.y = cy + dy * scale;
+        }
+
         p.pulsePhase += 0.025;
         const pulse = 0.85 + 0.15 * Math.sin(p.pulsePhase);
-        const alpha = p.baseOpacity * pulse * (spread ? 0.85 : 0.75);
+        const alpha = p.baseOpacity * pulse * (spread ? 0.82 : 0.72);
 
-        // ── Dot ──
+        // Dot
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = alpha;
         ctx.fill();
 
-        // ── Glow halo (always on larger dots, stronger when spread) ──
-        if (p.size > 2) {
-          const glowMul = spread ? 3.5 : 2.5;
-          const glowAlpha = spread ? 0.14 : 0.08;
+        // Glow halo
+        if (p.size > 2.2) {
+          const glowMul = spread ? 3.5 : 2.8;
+          const glowAlpha = spread ? 0.13 : 0.08;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * glowMul, 0, Math.PI * 2);
           const grad = ctx.createRadialGradient(
@@ -152,18 +178,18 @@ function ParticleField({ isHovered, containerSize }) {
         }
       });
 
-      // ── Connecting lines between nearby particles ──
-      ctx.lineWidth = 0.6;
+      // Connecting lines
+      ctx.lineWidth = 0.5;
       const checkStep = spread ? 2 : 3;
       for (let i = 0; i < particles.length; i += checkStep) {
         for (let j = i + 1; j < particles.length; j += checkStep) {
           const a = particles[i];
           const b = particles[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < LINE_DIST) {
-            const lineAlpha = (1 - dist / LINE_DIST) * (spread ? 0.14 : 0.06);
+          const ddx = a.x - b.x;
+          const ddy = a.y - b.y;
+          const d = Math.sqrt(ddx * ddx + ddy * ddy);
+          if (d < LINE_DIST) {
+            const lineAlpha = (1 - d / LINE_DIST) * (spread ? 0.12 : 0.05);
             ctx.strokeStyle = a.color;
             ctx.globalAlpha = lineAlpha;
             ctx.beginPath();
@@ -174,9 +200,9 @@ function ParticleField({ isHovered, containerSize }) {
         }
       }
 
-      // ── Central ambient glow ──
-      const glowAlpha = spread ? 0.05 : 0.12;
-      const glowR = spread ? containerSize * 0.18 : containerSize * 0.12;
+      // Central glow at TRUE center
+      const glowAlpha = spread ? 0.04 : 0.12;
+      const glowR = spread ? spreadMaxR * 0.5 : homeR * 0.9;
       const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
       centerGrad.addColorStop(0, `rgba(211, 85, 40, ${glowAlpha * 1.5})`);
       centerGrad.addColorStop(0.4, `rgba(232, 163, 23, ${glowAlpha})`);
@@ -186,13 +212,12 @@ function ParticleField({ isHovered, containerSize }) {
       ctx.beginPath();
       ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
       ctx.fill();
-
       ctx.globalAlpha = 1;
+
       animIdRef.current = requestAnimationFrame(draw);
     };
 
     draw();
-
     return () => {
       if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
     };
@@ -203,8 +228,9 @@ function ParticleField({ isHovered, containerSize }) {
       ref={canvasRef}
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         width: "100%",
         height: "100%",
         pointerEvents: "none",
@@ -221,8 +247,19 @@ export default function About() {
   const [paused, setPaused] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [containerSize, setContainerSize] = useState(0);
-  const orbitRef = useRef(null);
 
+  const orbitRef = useRef(null);
+  const innerItemRefs = useRef([]);
+  const outerItemRefs = useRef([]);
+  const animRef = useRef(null);
+  const timeRef = useRef(0);
+  const pausedRef = useRef(false);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+
+  // Measure container
   useEffect(() => {
     const measure = () => {
       if (orbitRef.current) {
@@ -235,8 +272,65 @@ export default function About() {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
+  /* ── JS-driven orbit: two rings, items locked to their circle ── */
+  useEffect(() => {
+    let prev = null;
+
+    const tick = (now) => {
+      if (prev === null) prev = now;
+      const dt = (now - prev) / 1000;
+      prev = now;
+
+      if (!pausedRef.current) {
+        timeRef.current += dt;
+      }
+
+      const t = timeRef.current;
+
+      // Inner ring items — along MIDDLE circle
+      innerRingItems.forEach((_, i) => {
+        const el = innerItemRefs.current[i];
+        if (!el) return;
+
+        const baseAngle = ((2 * Math.PI) / innerRingItems.length) * i;
+        const angle = baseAngle + t * INNER_SPEED;
+
+        const x = 50 + MIDDLE_CIRCLE_R * Math.cos(angle);
+        const y = 50 + MIDDLE_CIRCLE_R * Math.sin(angle);
+
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+      });
+
+      // Outer ring items — along OUTER circle
+      outerRingItems.forEach((_, i) => {
+        const el = outerItemRefs.current[i];
+        if (!el) return;
+
+        const baseAngle = ((2 * Math.PI) / outerRingItems.length) * i;
+        const angle = baseAngle - t * OUTER_SPEED; // reverse direction
+
+        const x = 50 + OUTER_CIRCLE_R * Math.cos(angle);
+        const y = 50 + OUTER_CIRCLE_R * Math.sin(angle);
+
+        el.style.left = `${x}%`;
+        el.style.top = `${y}%`;
+      });
+
+      animRef.current = requestAnimationFrame(tick);
+    };
+
+    animRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, []);
+
   return (
-    <section id="about" style={{ padding: "100px 0 120px", background: "var(--cream)" }}>
+    <section
+      id="about"
+      style={{ padding: "100px 0 120px", background: "var(--cream)" }}
+    >
       <div className="container-x">
         <div
           className="about-grid"
@@ -267,7 +361,8 @@ export default function About() {
               setHoveredItem(null);
             }}
           >
-            {/* ── Static decorative rings ── */}
+            {/* ── 3 Decorative circles ── */}
+            {/* Outermost circle — inset 6% — radius 44% */}
             <div
               style={{
                 position: "absolute",
@@ -278,6 +373,7 @@ export default function About() {
                 pointerEvents: "none",
               }}
             />
+            {/* Middle circle — inset 20% — radius 30% */}
             <div
               style={{
                 position: "absolute",
@@ -288,6 +384,7 @@ export default function About() {
                 pointerEvents: "none",
               }}
             />
+            {/* Innermost circle — inset 35% — radius 15% */}
             <div
               style={{
                 position: "absolute",
@@ -299,7 +396,7 @@ export default function About() {
               }}
             />
 
-            {/* Pulse ring */}
+            {/* Pulse ring on outer circle */}
             <div
               className="orbit-pulse-ring"
               style={{
@@ -311,86 +408,149 @@ export default function About() {
               }}
             />
 
-            {/* ═══ PARTICLE FIELD ═══ */}
-            <ParticleField isHovered={paused} containerSize={containerSize} />
+            {/* ═══ PARTICLES — home inside innermost circle ═══ */}
+            <ParticleField
+              isHovered={paused}
+              containerSize={containerSize}
+            />
 
-            {/* ── Single Orbit Ring ── */}
-            <div
-              className="orbit-container"
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "50%",
-                animationPlayState: paused ? "paused" : "running",
-              }}
-            >
-              {orbitItems.map((item, i) => {
-                const angleDeg = (360 / ITEM_COUNT) * i;
-                const angleRad = (angleDeg * Math.PI) / 180;
-                const x = 50 + ORBIT_RADIUS * Math.cos(angleRad);
-                const y = 50 + ORBIT_RADIUS * Math.sin(angleRad);
-                const isH = hoveredItem === i;
+            {/* ── INNER RING ITEMS — on middle circle ── */}
+            {innerRingItems.map((item, i) => {
+              const key = `inner-${item.label}`;
+              const isH = hoveredItem === key;
 
-                return (
-                  <div
-                    key={item.label}
-                    className="orbit-item"
-                    onMouseEnter={() => setHoveredItem(i)}
-                    onMouseLeave={() => setHoveredItem(null)}
+              const initAngle = ((2 * Math.PI) / innerRingItems.length) * i;
+              const initX = 50 + MIDDLE_CIRCLE_R * Math.cos(initAngle);
+              const initY = 50 + MIDDLE_CIRCLE_R * Math.sin(initAngle);
+
+              return (
+                <div
+                  key={key}
+                  ref={(el) => (innerItemRefs.current[i] = el)}
+                  onMouseEnter={() => setHoveredItem(key)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  style={{
+                    position: "absolute",
+                    left: `${initX}%`,
+                    top: `${initY}%`,
+                    zIndex: isH ? 40 : 20,
+                    willChange: "left, top",
+                  }}
+                >
+                  <motion.div
+                    animate={isH ? { scale: 1.35, y: -5 } : { scale: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                     style={{
-                      position: "absolute",
-                      left: `${x}%`,
-                      top: `${y}%`,
-                      zIndex: isH ? 40 : 20,
-                      animationPlayState: paused ? "paused" : "running",
+                      transform: "translate(-50%, -50%)",
+                      background: "#fff",
+                      border: `2px solid ${isH ? item.color : "var(--border-light)"}`,
+                      borderRadius: 100,
+                      padding: "7px 15px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 7,
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
+                      boxShadow: isH
+                        ? `0 10px 30px ${item.color}30, 0 0 0 4px ${item.color}10`
+                        : "0 2px 8px rgba(0,0,0,0.04)",
+                      transition: "border-color 0.3s, box-shadow 0.3s",
                     }}
                   >
-                    <motion.div
-                      animate={isH ? { scale: 1.4, y: -6 } : { scale: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    <span
                       style={{
-                        transform: "translate(-50%, -50%)",
-                        background: "#fff",
-                        border: `2px solid ${isH ? item.color : "var(--border-light)"}`,
-                        borderRadius: 100,
-                        padding: "8px 18px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                        boxShadow: isH
-                          ? `0 12px 36px ${item.color}30, 0 0 0 5px ${item.color}10`
-                          : "0 2px 8px rgba(0,0,0,0.04)",
-                        transition: "border-color 0.3s, box-shadow 0.3s",
+                        width: 9,
+                        height: 9,
+                        borderRadius: "50%",
+                        background: item.color,
+                        boxShadow: isH ? `0 0 12px ${item.color}90` : "none",
+                        transition: "box-shadow 0.3s",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: isH ? item.color : "var(--ink-secondary)",
+                        transition: "color 0.3s",
                       }}
                     >
-                      <span
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: "50%",
-                          background: item.color,
-                          boxShadow: isH ? `0 0 14px ${item.color}90` : "none",
-                          transition: "box-shadow 0.3s",
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: isH ? item.color : "var(--ink-secondary)",
-                          transition: "color 0.3s",
-                        }}
-                      >
-                        {item.label}
-                      </span>
-                    </motion.div>
-                  </div>
-                );
-              })}
-            </div>
+                      {item.label}
+                    </span>
+                  </motion.div>
+                </div>
+              );
+            })}
+
+            {/* ── OUTER RING ITEMS — on outer circle ── */}
+            {outerRingItems.map((item, i) => {
+              const key = `outer-${item.label}`;
+              const isH = hoveredItem === key;
+
+              const initAngle = ((2 * Math.PI) / outerRingItems.length) * i;
+              const initX = 50 + OUTER_CIRCLE_R * Math.cos(initAngle);
+              const initY = 50 + OUTER_CIRCLE_R * Math.sin(initAngle);
+
+              return (
+                <div
+                  key={key}
+                  ref={(el) => (outerItemRefs.current[i] = el)}
+                  onMouseEnter={() => setHoveredItem(key)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  style={{
+                    position: "absolute",
+                    left: `${initX}%`,
+                    top: `${initY}%`,
+                    zIndex: isH ? 40 : 20,
+                    willChange: "left, top",
+                  }}
+                >
+                  <motion.div
+                    animate={isH ? { scale: 1.4, y: -6 } : { scale: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                    style={{
+                      transform: "translate(-50%, -50%)",
+                      background: "#fff",
+                      border: `2px solid ${isH ? item.color : "var(--border-light)"}`,
+                      borderRadius: 100,
+                      padding: "8px 18px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
+                      boxShadow: isH
+                        ? `0 12px 36px ${item.color}30, 0 0 0 5px ${item.color}10`
+                        : "0 2px 8px rgba(0,0,0,0.04)",
+                      transition: "border-color 0.3s, box-shadow 0.3s",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: item.color,
+                        boxShadow: isH ? `0 0 14px ${item.color}90` : "none",
+                        transition: "box-shadow 0.3s",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: isH ? item.color : "var(--ink-secondary)",
+                        transition: "color 0.3s",
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </motion.div>
+                </div>
+              );
+            })}
           </motion.div>
 
           {/* ── RIGHT: Content ── */}
@@ -398,7 +558,11 @@ export default function About() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.7,
+              delay: 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <span className="section-tag">Why Solven</span>
             <h2
@@ -418,9 +582,10 @@ export default function About() {
                 marginBottom: 32,
               }}
             >
-              We don't just write code — we architect solutions. With deep domain
-              expertise across fintech, healthcare, logistics, and e-commerce, our
-              teams embed into your workflow and deliver outcomes that matter.
+              We don't just write code — we architect solutions. With deep
+              domain expertise across fintech, healthcare, logistics, and
+              e-commerce, our teams embed into your workflow and deliver
+              outcomes that matter.
             </p>
 
             <div
@@ -438,7 +603,11 @@ export default function About() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 + i * 0.07 }}
-                  style={{ display: "flex", alignItems: "flex-start", gap: 12 }}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 12,
+                  }}
                 >
                   <div
                     style={{
@@ -453,9 +622,15 @@ export default function About() {
                       flexShrink: 0,
                     }}
                   >
-                    <Check size={12} style={{ color: "var(--accent)" }} strokeWidth={3} />
+                    <Check
+                      size={12}
+                      style={{ color: "var(--accent)" }}
+                      strokeWidth={3}
+                    />
                   </div>
-                  <span style={{ fontSize: 15, color: "var(--ink-secondary)" }}>{p}</span>
+                  <span style={{ fontSize: 15, color: "var(--ink-secondary)" }}>
+                    {p}
+                  </span>
                 </motion.div>
               ))}
             </div>
@@ -468,20 +643,6 @@ export default function About() {
       </div>
 
       <style>{`
-        .orbit-container {
-          animation: orbitSpin 40s linear infinite;
-        }
-        .orbit-item {
-          animation: orbitCounterSpin 40s linear infinite;
-        }
-        @keyframes orbitSpin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @keyframes orbitCounterSpin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(-360deg); }
-        }
         .orbit-pulse-ring {
           animation: orbitPulseAnim 3.5s ease-in-out infinite;
         }

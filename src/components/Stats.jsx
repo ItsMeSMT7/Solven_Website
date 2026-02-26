@@ -42,7 +42,7 @@ export default function Stats() {
   return (
     <section style={{ padding: "80px 0" }}>
       <div className="container-x">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
+        <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
@@ -62,7 +62,7 @@ export default function Stats() {
 
       <style>{`
         @media (max-width: 767px) {
-          #root section:nth-of-type(5) > div > div {
+          .stats-grid {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }

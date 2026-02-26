@@ -4,7 +4,7 @@ import { ArrowRight, Zap } from "lucide-react";
 
 export default function CTA() {
   return (
-    <section id="contact" style={{ padding: "100px 0" }}>
+    <section id="contact" className="cta-section" style={{ padding: "100px 0" }}>
       <div className="container-x">
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
@@ -114,6 +114,14 @@ export default function CTA() {
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .cta-section {
+            padding: 60px 0 !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

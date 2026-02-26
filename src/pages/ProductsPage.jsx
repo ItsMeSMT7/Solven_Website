@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import AICallingAgent from "../assets/AICallingAgent.png";
+import DigitalMarketingTool from "../assets/DigitalMarketingTool.png";
+import ProjectManagemantTool from "../assets/ProjectManagemantTool.png";
+import docGenerator from "../assets/docGenerator.png";
+
+import Jwelary from "../assets/Jwelary.png";
 import {
   Bot,
   PhoneCall,
@@ -14,6 +20,11 @@ import {
   Zap,
   Star,
   ExternalLink,
+  BarChart3,
+  MessageSquare,
+  Users,
+  ShoppingBag,
+  FileCheck,
 } from "lucide-react";
 
 /* ═══ PRODUCT DATA ═══ */
@@ -40,6 +51,8 @@ const products = [
       { label: "Time Saved", value: "15h/week" },
     ],
     badge: "Most Popular",
+    // ═══ ADD YOUR IMAGE PATH HERE ═══
+    image: DigitalMarketingTool,
   },
   {
     icon: PhoneCall,
@@ -63,6 +76,7 @@ const products = [
       { label: "Cost Saving", value: "70%" },
     ],
     badge: "AI Powered",
+    image: AICallingAgent,
   },
   {
     icon: LayoutDashboard,
@@ -86,6 +100,7 @@ const products = [
       { label: "Teams Using", value: "500+" },
     ],
     badge: "Enterprise",
+    image: ProjectManagemantTool,
   },
   {
     icon: Gem,
@@ -109,10 +124,11 @@ const products = [
       { label: "Retailers", value: "200+" },
     ],
     badge: "Industry Specific",
+    image: Jwelary,
   },
   {
     icon: FileText,
-    title: "Document Generator Dynamic",
+    title: "Document Builder Suite",
     tagline: "Automate legal & audit documents instantly",
     desc: "A powerful dynamic document generation platform for legal professionals and auditors. Create contracts, compliance reports, audit documents, and legal notices from customizable templates with auto-fill fields, digital signatures, and version control.",
     color: "#7048D6",
@@ -132,12 +148,320 @@ const products = [
       { label: "Time Saved", value: "80%" },
     ],
     badge: "Professional",
+    image: docGenerator,
   },
 ];
+/* ═══ FEATURE PREVIEW CARD (Image side) ═══ */
+function FeaturePreview({ product, isCardHovered }) {
+  const [imgError, setImgError] = useState(false);
 
-/* ═══ COMPONENT ═══ */
+  return (
+    <div
+      style={{
+        position: "relative",
+        borderRadius: 20,
+        overflow: "hidden",
+        height: "100%",
+        minHeight: 400,
+        cursor: "default",
+      }}
+    >
+      {/* ═══ IMAGE LAYER — always present ═══ */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 20,
+          overflow: "hidden",
+          zIndex: 1,
+        }}
+      >
+        {/* Actual product image */}
+        {!imgError ? (
+          <img
+            src={product.image}
+            alt={product.title}
+            onError={() => setImgError(true)}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
+              transition: "all 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+              filter: isCardHovered ? "blur(12px)" : "blur(0px)",
+              transform: isCardHovered ? "scale(1.08)" : "scale(1)",
+            }}
+          />
+        ) : (
+          /* Fallback gradient if image fails to load */
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: `linear-gradient(145deg, ${product.bg}, #fff)`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 16,
+              transition: "all 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+              filter: isCardHovered ? "blur(12px)" : "blur(0px)",
+              transform: isCardHovered ? "scale(1.08)" : "scale(1)",
+            }}
+          >
+            {/* Dot pattern */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.05,
+                backgroundImage: `radial-gradient(circle, ${product.color} 1px, transparent 1px)`,
+                backgroundSize: "16px 16px",
+              }}
+            />
+            <div
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 22,
+                background: product.gradient,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: `0 12px 36px ${product.color}25`,
+                position: "relative",
+              }}
+            >
+              <product.icon size={36} style={{ color: "#fff" }} strokeWidth={1.5} />
+            </div>
+            <div style={{ textAlign: "center", position: "relative" }}>
+              <h4
+                style={{
+                  fontFamily: "var(--serif)",
+                  fontSize: 20,
+                  color: "var(--ink)",
+                  marginBottom: 4,
+                }}
+              >
+                {product.title}
+              </h4>
+              <p style={{ fontSize: 13, color: "var(--ink-muted)" }}>{product.tagline}</p>
+            </div>
+          </div>
+        )}
+
+        {/* ── Dark overlay on hover (over image) ── */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `linear-gradient(
+              180deg,
+              ${product.color}CC 0%,
+              ${product.color}99 40%,
+              rgba(0,0,0,0.75) 100%
+            )`,
+            opacity: isCardHovered ? 1 : 0,
+            transition: "opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
+            zIndex: 2,
+          }}
+        />
+
+        {/* ── Bottom gradient (subtle, for non-hover readability) ── */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "40%",
+            background: isCardHovered
+              ? "transparent"
+              : "linear-gradient(to top, rgba(0,0,0,0.4), transparent)",
+            transition: "background 0.4s ease",
+            zIndex: 2,
+          }}
+        />
+
+        {/* ── Product name badge on image (visible when NOT hovered) ── */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 20,
+            left: 20,
+            right: 20,
+            zIndex: 3,
+            opacity: isCardHovered ? 0 : 1,
+            transform: isCardHovered ? "translateY(10px)" : "translateY(0)",
+            transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              background: "rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(255,255,255,0.2)",
+              flexShrink: 0,
+            }}
+          >
+            <product.icon size={20} style={{ color: "#fff" }} strokeWidth={1.6} />
+          </div>
+          <div>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: "#fff",
+                textShadow: "0 1px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              {product.title}
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                color: "rgba(255,255,255,0.7)",
+                textShadow: "0 1px 3px rgba(0,0,0,0.2)",
+              }}
+            >
+              {product.tagline}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ FEATURES OVERLAY — appears on hover over blurred image ═══ */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 20,
+          padding: 28,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          zIndex: 10,
+          opacity: isCardHovered ? 1 : 0,
+          transform: isCardHovered ? "translateY(0)" : "translateY(12px)",
+          transition: "all 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
+          pointerEvents: isCardHovered ? "auto" : "none",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            color: "#fff",
+            marginBottom: 20,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 7,
+              background: "rgba(255,255,255,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Zap size={13} style={{ color: "#fff" }} />
+          </div>
+          Key Features
+        </div>
+
+        {/* Feature items */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          {product.features.map((f, fi) => (
+            <motion.div
+              key={f}
+              initial={{ opacity: 0, x: 16 }}
+              animate={
+                isCardHovered
+                  ? { opacity: 1, x: 0 }
+                  : { opacity: 0, x: 16 }
+              }
+              transition={{
+                delay: isCardHovered ? 0.06 + fi * 0.055 : 0,
+                duration: 0.35,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 14px",
+                borderRadius: 12,
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(4px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                transition: "all 0.3s ease",
+                cursor: "default",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.22)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+                e.currentTarget.style.transform = "translateX(6px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.12)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                e.currentTarget.style.transform = "translateX(0)";
+              }}
+            >
+              <CheckCircle2
+                size={16}
+                style={{
+                  color: "#fff",
+                  flexShrink: 0,
+                  opacity: 0.9,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "#fff",
+                  fontWeight: 500,
+                  lineHeight: 1.4,
+                }}
+              >
+                {f}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ MAIN COMPONENT ═══ */
 export default function ProductsPage() {
   const [hoveredIdx, setHoveredIdx] = useState(null);
+  const [hoveredFeatureIdx, setHoveredFeatureIdx] = useState(null);
 
   return (
     <>
@@ -190,10 +514,7 @@ export default function ProductsPage() {
           }}
         />
 
-        <div
-          className="container-x"
-          style={{ position: "relative", zIndex: 5 }}
-        >
+        <div className="container-x" style={{ position: "relative", zIndex: 5 }}>
           <div
             style={{
               maxWidth: 720,
@@ -215,11 +536,7 @@ export default function ProductsPage() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontFamily: "var(--serif)",
                 fontSize: "clamp(2.4rem, 5.5vw, 4rem)",
@@ -230,8 +547,7 @@ export default function ProductsPage() {
               Products that{" "}
               <span
                 style={{
-                  background:
-                    "linear-gradient(135deg, var(--accent), var(--amber))",
+                  background: "linear-gradient(135deg, var(--accent), var(--amber))",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -254,27 +570,17 @@ export default function ProductsPage() {
                 lineHeight: 1.75,
               }}
             >
-              Ready-to-deploy SaaS products powered by AI and built for
-              scale. From marketing automation to document generation —
-              tools your team will love.
+              Ready-to-deploy SaaS products powered by AI and built for scale. From
+              marketing automation to document generation — tools your team will love.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 14,
-                justifyContent: "center",
-              }}
+              style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}
             >
-              <Link
-                to="/#contactus"
-                className="btn-fill"
-                style={{ textDecoration: "none" }}
-              >
+              <Link to="/#contactus" className="btn-fill" style={{ textDecoration: "none" }}>
                 Request a Demo <Sparkles size={16} />
               </Link>
               <Link
@@ -300,8 +606,7 @@ export default function ProductsPage() {
                   e.currentTarget.style.borderColor = "var(--ink)";
                   e.currentTarget.style.background = "#fff";
                   e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 28px rgba(0,0,0,0.08)";
+                  e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.08)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = "var(--border)";
@@ -320,13 +625,7 @@ export default function ProductsPage() {
       {/* ═══ PRODUCTS GRID ═══ */}
       <section style={{ padding: "60px 0 100px" }}>
         <div className="container-x">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 32,
-            }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
             {products.map((product, i) => {
               const isH = hoveredIdx === i;
               const isEven = i % 2 === 0;
@@ -337,28 +636,19 @@ export default function ProductsPage() {
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
-                  transition={{
-                    delay: 0.1,
-                    duration: 0.7,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
+                  transition={{ delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
                   className="card-base"
                   style={{
                     overflow: "hidden",
                     position: "relative",
-                    transition:
-                      "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
-                    transform: isH
-                      ? "translateY(-6px)"
-                      : "translateY(0)",
+                    transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+                    transform: isH ? "translateY(-6px)" : "translateY(0)",
                     boxShadow: isH
                       ? `0 24px 56px ${product.color}10, 0 8px 24px rgba(0,0,0,0.05)`
                       : "0 1px 4px rgba(0,0,0,0.04)",
-                    borderColor: isH
-                      ? `${product.color}25`
-                      : "var(--border-light)",
+                    borderColor: isH ? `${product.color}25` : "var(--border-light)",
                   }}
                 >
                   {/* Top accent */}
@@ -366,12 +656,9 @@ export default function ProductsPage() {
                     style={{
                       height: 3,
                       background: product.gradient,
-                      transform: isH
-                        ? "scaleX(1)"
-                        : "scaleX(0)",
+                      transform: isH ? "scaleX(1)" : "scaleX(0)",
                       transformOrigin: isEven ? "left" : "right",
-                      transition:
-                        "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+                      transition: "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
                     }}
                   />
 
@@ -396,21 +683,15 @@ export default function ProductsPage() {
                     style={{
                       padding: "40px 44px",
                       display: "grid",
-                      gridTemplateColumns: isEven
-                        ? "1fr 1fr"
-                        : "1fr 1fr",
+                      gridTemplateColumns: "1fr 1fr",
                       gap: 48,
                       alignItems: "center",
                       position: "relative",
                       zIndex: 2,
                     }}
                   >
-                    {/* Content side */}
-                    <div
-                      style={{
-                        order: isEven ? 1 : 2,
-                      }}
-                    >
+                    {/* ── Content side ── */}
+                    <div style={{ order: isEven ? 1 : 2 }}>
                       {/* Badge */}
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
@@ -427,11 +708,7 @@ export default function ProductsPage() {
                           marginBottom: 20,
                         }}
                       >
-                        <Star
-                          size={12}
-                          style={{ color: product.color }}
-                          fill={product.color}
-                        />
+                        <Star size={12} style={{ color: product.color }} fill={product.color} />
                         <span
                           style={{
                             fontSize: 11,
@@ -446,49 +723,25 @@ export default function ProductsPage() {
                       </motion.div>
 
                       {/* Icon + Title */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 16,
-                          marginBottom: 14,
-                        }}
-                      >
+                      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
                         <motion.div
-                          // animate={
-                          //   isH
-                          //     ? { scale: 1.1, rotate: -6 }
-                          //     : { scale: 1, rotate: 0 }
-                          // }
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 20,
-                          }}
+                          transition={{ type: "spring", stiffness: 400, damping: 20 }}
                           style={{
                             width: 56,
                             height: 56,
                             borderRadius: 16,
-                            background: isH
-                              ? product.gradient
-                              : product.bg,
+                            background: isH ? product.gradient : product.bg,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            boxShadow: isH
-                              ? `0 8px 24px ${product.color}25`
-                              : "none",
-                            transition:
-                              "background 0.4s, box-shadow 0.4s",
+                            boxShadow: isH ? `0 8px 24px ${product.color}25` : "none",
+                            transition: "background 0.4s, box-shadow 0.4s",
                             flexShrink: 0,
                           }}
                         >
                           <product.icon
                             size={26}
-                            style={{
-                              color: isH ? "#fff" : product.color,
-                              transition: "color 0.3s",
-                            }}
+                            style={{ color: isH ? "#fff" : product.color, transition: "color 0.3s" }}
                             strokeWidth={1.6}
                           />
                         </motion.div>
@@ -497,23 +750,14 @@ export default function ProductsPage() {
                             style={{
                               fontFamily: "var(--serif)",
                               fontSize: 24,
-                              color: isH
-                                ? product.color
-                                : "var(--ink)",
+                              color: isH ? product.color : "var(--ink)",
                               transition: "color 0.3s",
                               marginBottom: 2,
                             }}
                           >
                             {product.title}
                           </h3>
-                          <p
-                            style={{
-                              fontSize: 14,
-                              color: "var(--ink-muted)",
-                            }}
-                          >
-                            {product.tagline}
-                          </p>
+                          <p style={{ fontSize: 14, color: "var(--ink-muted)" }}>{product.tagline}</p>
                         </div>
                       </div>
 
@@ -530,14 +774,7 @@ export default function ProductsPage() {
                       </p>
 
                       {/* Highlight stats */}
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: 16,
-                          marginBottom: 28,
-                          flexWrap: "wrap",
-                        }}
-                      >
+                      <div style={{ display: "flex", gap: 16, marginBottom: 28, flexWrap: "wrap" }}>
                         {product.highlights.map((h) => (
                           <div
                             key={h.label}
@@ -577,13 +814,7 @@ export default function ProductsPage() {
                       </div>
 
                       {/* CTAs */}
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: 12,
-                          flexWrap: "wrap",
-                        }}
-                      >
+                      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                         <Link
                           to="/#contactus"
                           style={{
@@ -603,18 +834,15 @@ export default function ProductsPage() {
                             boxShadow: `0 4px 16px ${product.color}20`,
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.transform =
-                              "translateY(-2px)";
+                            e.currentTarget.style.transform = "translateY(-2px)";
                             e.currentTarget.style.boxShadow = `0 8px 28px ${product.color}30`;
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.transform =
-                              "translateY(0)";
+                            e.currentTarget.style.transform = "translateY(0)";
                             e.currentTarget.style.boxShadow = `0 4px 16px ${product.color}20`;
                           }}
                         >
-                          Request Demo{" "}
-                          <ArrowRight size={14} />
+                          Request Demo <ArrowRight size={14} />
                         </Link>
                         <button
                           style={{
@@ -625,140 +853,38 @@ export default function ProductsPage() {
                             fontSize: 14,
                             fontWeight: 600,
                             borderRadius: 100,
-                            border: `1.5px solid var(--border)`,
+                            border: "1.5px solid var(--border)",
                             background: "transparent",
                             color: "var(--ink-secondary)",
                             cursor: "pointer",
                             transition: "all 0.3s ease",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor =
-                              product.color;
-                            e.currentTarget.style.color =
-                              product.color;
-                            e.currentTarget.style.transform =
-                              "translateY(-2px)";
+                            e.currentTarget.style.borderColor = product.color;
+                            e.currentTarget.style.color = product.color;
+                            e.currentTarget.style.transform = "translateY(-2px)";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--border)";
-                            e.currentTarget.style.color =
-                              "var(--ink-secondary)";
-                            e.currentTarget.style.transform =
-                              "translateY(0)";
+                            e.currentTarget.style.borderColor = "var(--border)";
+                            e.currentTarget.style.color = "var(--ink-secondary)";
+                            e.currentTarget.style.transform = "translateY(0)";
                           }}
                         >
-                          Learn More{" "}
-                          <ExternalLink size={13} />
+                          Learn More <ExternalLink size={13} />
                         </button>
                       </div>
                     </div>
 
-                    {/* Features side */}
+                    {/* ── Features side — IMAGE ↔ FEATURES on hover ── */}
                     <div
-                      style={{
-                        order: isEven ? 2 : 1,
-                      }}
+                      style={{ order: isEven ? 2 : 1 }}
+                      onMouseEnter={() => setHoveredFeatureIdx(i)}
+                      onMouseLeave={() => setHoveredFeatureIdx(null)}
                     >
-                      <div
-                        style={{
-                          background: product.bg,
-                          borderRadius: 20,
-                          padding: 32,
-                          border: `1px solid ${product.color}10`,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            textTransform: "uppercase",
-                            letterSpacing: "0.1em",
-                            color: product.color,
-                            marginBottom: 20,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <Zap
-                            size={14}
-                            style={{ color: product.color }}
-                          />
-                          Key Features
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 14,
-                          }}
-                        >
-                          {product.features.map(
-                            (f, fi) => (
-                              <motion.div
-                                key={f}
-                                initial={{
-                                  opacity: 0,
-                                  x: isEven ? 10 : -10,
-                                }}
-                                whileInView={{
-                                  opacity: 1,
-                                  x: 0,
-                                }}
-                                viewport={{ once: true }}
-                                transition={{
-                                  delay: 0.2 + fi * 0.06,
-                                  duration: 0.4,
-                                }}
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 12,
-                                  padding: "10px 14px",
-                                  borderRadius: 10,
-                                  background: "#fff",
-                                  border: "1px solid transparent",
-                                  transition: "all 0.3s ease",
-                                  cursor: "default",
-                                }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.borderColor = `${product.color}20`;
-                                  e.currentTarget.style.transform =
-                                    "translateX(4px)";
-                                  e.currentTarget.style.boxShadow = `0 4px 12px ${product.color}08`;
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.borderColor =
-                                    "transparent";
-                                  e.currentTarget.style.transform =
-                                    "translateX(0)";
-                                  e.currentTarget.style.boxShadow =
-                                    "none";
-                                }}
-                              >
-                                <CheckCircle2
-                                  size={16}
-                                  style={{
-                                    color: product.color,
-                                    flexShrink: 0,
-                                  }}
-                                />
-                                <span
-                                  style={{
-                                    fontSize: 14,
-                                    color: "var(--ink-secondary)",
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {f}
-                                </span>
-                              </motion.div>
-                            )
-                          )}
-                        </div>
-                      </div>
+                      <FeaturePreview
+                        product={product}
+                        isCardHovered={hoveredFeatureIdx === i}
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -768,52 +894,29 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* ═══ COMPARISON / TRUST SECTION ═══ */}
-      <section
-        style={{
-          padding: "80px 0 100px",
-          background: "var(--cream)",
-        }}
-      >
+      {/* ═══ TRUST SECTION ═══ */}
+      <section style={{ padding: "80px 0 100px", background: "var(--cream)" }}>
         <div className="container-x">
-          <div
-            style={{
-              maxWidth: 560,
-              margin: "0 auto 60px",
-              textAlign: "center",
-            }}
-          >
+          <div style={{ maxWidth: 560, margin: "0 auto 60px", textAlign: "center" }}>
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <span className="section-tag">
-                Why Our Products
-              </span>
+              <span className="section-tag">Why Our Products</span>
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              style={{
-                fontFamily: "var(--serif)",
-                fontSize: "clamp(2rem, 4vw, 2.8rem)",
-              }}
+              style={{ fontFamily: "var(--serif)", fontSize: "clamp(2rem, 4vw, 2.8rem)" }}
             >
               Built for real businesses, not demos
             </motion.h2>
           </div>
 
-          <div
-            className="trust-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 20,
-            }}
-          >
+          <div className="trust-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {[
               {
                 icon: Zap,
@@ -839,10 +942,7 @@ export default function ProductsPage() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  delay: i * 0.12,
-                  duration: 0.5,
-                }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
                 className="card-base"
                 style={{
                   padding: 32,
@@ -851,14 +951,11 @@ export default function ProductsPage() {
                   transition: "all 0.35s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform =
-                    "translateY(-6px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 16px 40px rgba(0,0,0,0.06)";
+                  e.currentTarget.style.transform = "translateY(-6px)";
+                  e.currentTarget.style.boxShadow = "0 16px 40px rgba(0,0,0,0.06)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform =
-                    "translateY(0)";
+                  e.currentTarget.style.transform = "translateY(0)";
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
@@ -874,28 +971,12 @@ export default function ProductsPage() {
                     margin: "0 auto 20px",
                   }}
                 >
-                  <item.icon
-                    size={24}
-                    style={{ color: item.color }}
-                    strokeWidth={1.6}
-                  />
+                  <item.icon size={24} style={{ color: item.color }} strokeWidth={1.6} />
                 </div>
-                <h4
-                  style={{
-                    fontFamily: "var(--serif)",
-                    fontSize: 18,
-                    marginBottom: 10,
-                  }}
-                >
+                <h4 style={{ fontFamily: "var(--serif)", fontSize: 18, marginBottom: 10 }}>
                   {item.title}
                 </h4>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "var(--ink-secondary)",
-                    lineHeight: 1.65,
-                  }}
-                >
+                <p style={{ fontSize: 14, color: "var(--ink-secondary)", lineHeight: 1.65 }}>
                   {item.desc}
                 </p>
               </motion.div>
@@ -911,16 +992,12 @@ export default function ProductsPage() {
             initial={{ opacity: 0, y: 30, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{
-              duration: 0.7,
-              ease: [0.22, 1, 0.36, 1],
-            }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: "relative",
               overflow: "hidden",
               borderRadius: 28,
-              background:
-                "linear-gradient(135deg, #1a0f07, #2d1810, #1a1005)",
+              background: "linear-gradient(135deg, #1a0f07, #2d1810, #1a1005)",
             }}
           >
             <div
@@ -928,8 +1005,7 @@ export default function ProductsPage() {
                 position: "absolute",
                 inset: 0,
                 opacity: 0.06,
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
               }}
             />
@@ -958,13 +1034,7 @@ export default function ProductsPage() {
               }}
             />
 
-            <div
-              style={{
-                position: "relative",
-                padding: "64px 32px",
-                textAlign: "center",
-              }}
-            >
+            <div style={{ position: "relative", padding: "64px 32px", textAlign: "center" }}>
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -981,17 +1051,8 @@ export default function ProductsPage() {
                   marginBottom: 28,
                 }}
               >
-                <Sparkles
-                  size={14}
-                  style={{ color: "#E8A317" }}
-                />
-                <span
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.8)",
-                  }}
-                >
+                <Sparkles size={14} style={{ color: "#E8A317" }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>
                   Start your free trial
                 </span>
               </motion.div>
@@ -1024,8 +1085,8 @@ export default function ProductsPage() {
                   margin: "0 auto 32px",
                 }}
               >
-                Schedule a personalized demo and see how our AI-powered
-                products can transform your operations.
+                Schedule a personalized demo and see how our AI-powered products can transform
+                your operations.
               </motion.p>
 
               <motion.div
@@ -1033,24 +1094,14 @@ export default function ProductsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: 14,
-                }}
+                style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}
               >
                 <Link
                   to="/#contactus"
                   className="btn-fill"
-                  style={{
-                    background: "#fff",
-                    color: "var(--ink)",
-                    textDecoration: "none",
-                  }}
+                  style={{ background: "#fff", color: "var(--ink)", textDecoration: "none" }}
                 >
-                  Schedule a Demo{" "}
-                  <ArrowRight size={16} />
+                  Schedule a Demo <ArrowRight size={16} />
                 </Link>
                 <Link
                   to="/services"
@@ -1069,16 +1120,12 @@ export default function ProductsPage() {
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.08)";
-                    e.currentTarget.style.borderColor =
-                      "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background =
-                      "transparent";
-                    e.currentTarget.style.borderColor =
-                      "rgba(255,255,255,0.2)";
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
                   }}
                 >
                   Explore Services
@@ -1089,7 +1136,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* ═══ RESPONSIVE STYLES ═══ */}
+      {/* ═══ RESPONSIVE ═══ */}
       <style>{`
         @media (max-width: 900px) {
           .product-card-inner {

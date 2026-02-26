@@ -119,28 +119,6 @@ export default function Navbar() {
               flexShrink: 0,
             }}
           >
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
-                background: "linear-gradient(135deg, var(--accent), var(--amber))",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span
-                style={{
-                  color: "#fff",
-                  fontFamily: "var(--serif)",
-                  fontSize: 16,
-                  fontWeight: 700,
-                }}
-              >
-                S
-              </span>
-            </div>
             <span
               style={{
                 fontFamily: "var(--serif)",
@@ -157,7 +135,7 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <nav
             className="hidden lg:flex"
-            style={{ display: "flex", alignItems: "center", gap: 4 }}
+            style={{ alignItems: "center", gap: 4 }}
           >
             {links.map((l) => {
               const active = isActive(l.href);
@@ -218,7 +196,7 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div
             className="hidden lg:flex"
-            style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}
+            style={{ alignItems: "center", gap: 8, flexShrink: 0 }}
           >
             <Link
               to="/#contactus"

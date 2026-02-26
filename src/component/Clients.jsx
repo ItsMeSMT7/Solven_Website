@@ -107,7 +107,7 @@ export default function Clients() {
   const [paused, setPaused] = useState(false);
 
   return (
-    <section style={{ padding: "72px 0 80px", overflow: "hidden" }}>
+    <section className="clients-section" style={{ padding: "72px 0 80px", overflow: "hidden" }}>
       <div className="container-x">
         <motion.p
           initial={{ opacity: 0 }}
@@ -214,6 +214,11 @@ export default function Clients() {
         @keyframes marqueeScroll {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
+        }
+        @media (max-width: 768px) {
+          .clients-section {
+            padding: 50px 0 60px !important;
+          }
         }
       `}</style>
     </section>

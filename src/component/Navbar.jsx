@@ -88,9 +88,9 @@ export default function Navbar() {
 
             {/* Desktop CTA */}
             <div style={{ display: "flex", alignItems: "center", gap: 12 }} className="hidden lg:flex">
-              <a href="#" style={{ fontSize: 15, fontWeight: 500, color: "var(--ink-secondary)", padding: "8px 12px" }}>
+              {/* <a href="#" style={{ fontSize: 15, fontWeight: 500, color: "var(--ink-secondary)", padding: "8px 12px" }}>
                 Log in
-              </a>
+              </a> */}
               <button className="btn-fill" style={{ padding: "10px 26px", fontSize: 14 }}>
                 Get Started
               </button>

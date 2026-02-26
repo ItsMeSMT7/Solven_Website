@@ -172,6 +172,26 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .footer-links-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .footer-links-grid > div:first-child {
+            grid-column: span 2;
+          }
+        }
+        @media (max-width: 640px) {
+          .footer-links-grid {
+            grid-template-columns: 1fr !important;
+            gap: 40px !important;
+          }
+          .footer-links-grid > div:first-child {
+            grid-column: span 1;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

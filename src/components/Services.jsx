@@ -40,7 +40,7 @@ export default function Services() {
         </div>
 
         {/* ═══ Card Grid ═══ */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
           {services.map((svc, i) => {
             const isHovered = hoveredIdx === i;
             return (

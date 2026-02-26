@@ -130,7 +130,7 @@ const visionPoints = [
 
 const teamMembers = [
   {
-    name: "Rahul Sharma",
+    name: "NIHAR VISPUTE",
     role: "Founder & CEO",
     desc: "Serial entrepreneur with 12+ years in enterprise technology. Previously led engineering at a Fortune 500 SaaS company. Passionate about using AI to solve real-world business problems.",
     avatar: "RS",
@@ -143,7 +143,7 @@ const teamMembers = [
     tags: ["Strategy", "AI/ML", "Product"],
   },
   {
-    name: "Ananya Patel",
+    name: "Paras Deshmane",
     role: "Co-Founder & CTO",
     desc: "Full-stack architect and systems thinker. Ex-Google engineer with expertise in distributed systems, ML infrastructure, and cloud-native architectures. Leads our 25+ person engineering team.",
     avatar: "AP",
@@ -157,8 +157,8 @@ const teamMembers = [
     tags: ["Architecture", "Cloud", "DevOps"],
   },
   {
-    name: "Vikram Desai",
-    role: "Chief Operating Officer",
+    name: "Maithili Sarolkar",
+    role: "COO & CMO",
     desc: "Operations expert who scaled three startups from seed to Series B. MBA from IIM Bangalore. Ensures every project is delivered on time, within budget, and exceeding expectations.",
     avatar: "VD",
     color: "#0E8A7D",

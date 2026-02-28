@@ -4,7 +4,7 @@ import affordabledriveeducation from "../assets/Trustedby/affordabledriveeducati
 import bhokarikarlawfirms from "../assets/Trustedby/bhokarikarlawfirms.png";
 import discover from "../assets/Trustedby/discover.png";
 import enterpriseglobal from "../assets/Trustedby/enterpriseglobal.png";
-// import journey from "../assets/Trustedby/journey.png";
+import journey from "../assets/Trustedby/journey.svg";
 import paripoorn from "../assets/Trustedby/paripoorn.png";
 import samarth from "../assets/Trustedby/samarth.png";
 import Shrisiddhlogo from "../assets/Trustedby/Shrisiddhlogo.png";
@@ -16,7 +16,7 @@ const clients = [
   { name: "Bhokarikar Law Firms", logo: bhokarikarlawfirms },
   { name: "Discover", logo: discover },
   { name: "Enterprise Global", logo: enterpriseglobal },
-  // { name: "Journey", logo: journey },
+   { name: "Journey", logo: journey },
   { name: "Paripoorn", logo: paripoorn },
   { name: "Samarth", logo: samarth },
   { name: "Shri Siddh", logo: Shrisiddhlogo },

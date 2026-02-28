@@ -8,7 +8,7 @@ This document provides a detailed overview of the project structure, specificall
 
 ```text
 src/
-└── components/
+├── components/
     ├── Navbar.jsx        # Fixed navigation bar with scroll effects and mobile menu
     ├── Hero.jsx          # Hero section with animated text and dashboard mockup
     ├── Clients.jsx       # Logo strip of trusted companies
@@ -19,7 +19,16 @@ src/
     ├── About.jsx         # Company info with animated orbital diagram
     ├── Testimonials.jsx  # Customer review cards
     ├── CTA.jsx           # Final call-to-action section
-    └── Footer.jsx        # Site footer with links and contact info
+    ├── Footer.jsx        # Site footer with links and contact info
+    ├── Layout.jsx        # Layout wrapper (Navbar + Footer)
+    └── ScrollToTop.jsx   # Scroll restoration utility
+├── pages/
+    ├── Home.jsx          # Homepage composition
+    ├── ServicesPage.jsx  # Services page
+    ├── ProductsPage.jsx  # Products page
+    └── AboutPage.jsx     # About page
+├── App.jsx               # Main application layout
+└── main.jsx              # Entry point
 ```
 
 ---
@@ -2470,4 +2479,250 @@ export default function Footer() {
     </footer>
   );
 }
+```
+
+---
+
+### 12. `src/components/Layout.jsx`
+
+**Description:**
+A wrapper component that provides the consistent site structure. It renders the `Navbar`, the page content (via `Outlet`), and the `Footer`. It also includes the `ScrollToTop` utility to ensure navigation resets scroll position.
+
+**Key Functionality:**
+1.  **Structure**: Wraps all page content with fixed navigation and footer.
+2.  **Routing**: Uses `Outlet` from `react-router-dom` to render the matched child route.
+
+**Source Code:**
+
+```javascriptreact
+import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import ScrollToTop from "./ScrollToTop";
+
+export default function Layout() {
+  return (
+    <>
+      <ScrollToTop />
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+}
+```
+
+---
+
+### 13. `src/components/ScrollToTop.jsx`
+
+**Description:**
+A utility component that listens for route changes and scrolls the window to the top. This mimics standard browser navigation behavior in a Single Page Application (SPA).
+
+**Source Code:**
+
+```javascriptreact
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+export default function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+```
+
+---
+
+## Page Details
+
+### 1. `src/pages/Home.jsx`
+
+**Description:**
+The main landing page that composes the primary marketing sections. It serves as the "index" route.
+
+**Composition:**
+*   **Hero**: First impression and hook.
+*   **Clients**: Social proof.
+*   **Features**: Core platform capabilities.
+*   **ProductDemo**: Technical deep dive.
+*   **Stats**: Quantitative proof.
+*   **Services**: High-level service offerings.
+*   **About**: Company mission.
+*   **Testimonials**: Customer success.
+*   **CTA**: Final conversion point.
+
+**Source Code:**
+
+```javascriptreact
+import Hero from "../components/Hero";
+import Clients from "../components/Clients";
+import Features from "../components/Features";
+import ProductDemo from "../components/ProductDemo";
+import Stats from "../components/Stats";
+import Services from "../components/Services";
+import About from "../components/About";
+import Testimonials from "../components/Testimonials";
+import CTA from "../components/CTA";
+
+export default function Home() {
+  return (
+    <>
+      <Hero />
+      <Clients />
+      <Features />
+      <ProductDemo />
+      <Stats />
+      <Services />
+      <About />
+      <Testimonials />
+      <CTA />
+    </>
+  );
+}
+```
+
+---
+
+### 2. `src/pages/ServicesPage.jsx`
+
+**Description:**
+A dedicated page for detailing service offerings. It reuses the `Services` component but adds a specific page header.
+
+**Source Code:**
+
+```javascriptreact
+import { motion } from "framer-motion";
+import Services from "../components/Services";
+import Testimonials from "../components/Testimonials";
+import CTA from "../components/CTA";
+
+export default function ServicesPage() {
+  return (
+    <div style={{ paddingTop: 100 }}>
+      <div className="container-x" style={{ padding: "80px 0 40px", textAlign: "center" }}>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: 24 }}
+        >
+          Our Services
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          style={{ fontSize: 18, color: "var(--ink-secondary)", maxWidth: 600, margin: "0 auto" }}
+        >
+          Comprehensive technology solutions tailored to your business needs.
+          From architecture to deployment, we handle it all.
+        </motion.p>
+      </div>
+      <Services />
+      <Testimonials />
+      <CTA />
+    </div>
+  );
+}
+```
+
+---
+
+### 3. `src/pages/ProductsPage.jsx`
+
+**Description:**
+A dedicated page for the platform/product aspect. It focuses on the technical features and developer experience.
+
+**Source Code:**
+
+```javascriptreact
+import { motion } from "framer-motion";
+import Features from "../components/Features";
+import ProductDemo from "../components/ProductDemo";
+import Stats from "../components/Stats";
+import CTA from "../components/CTA";
+
+export default function ProductsPage() {
+  return (
+    <div style={{ paddingTop: 100 }}>
+      <div className="container-x" style={{ padding: "80px 0 40px", textAlign: "center" }}>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: 24 }}
+        >
+          The Platform
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          style={{ fontSize: 18, color: "var(--ink-secondary)", maxWidth: 600, margin: "0 auto" }}
+        >
+          Built for scale, security, and developer productivity.
+          Explore the tools that power modern enterprises.
+        </motion.p>
+      </div>
+      <ProductDemo />
+      <Features />
+      <Stats />
+      <CTA />
+    </div>
+  );
+}
+```
+
+---
+
+### 4. `src/pages/AboutPage.jsx`
+
+**Description:**
+A dedicated page for company information.
+
+**Source Code:**
+
+```javascriptreact
+import { motion } from "framer-motion";
+import About from "../components/About";
+import Clients from "../components/Clients";
+import Stats from "../components/Stats";
+import CTA from "../components/CTA";
+
+export default function AboutPage() {
+  return (
+    <div style={{ paddingTop: 100 }}>
+      <div className="container-x" style={{ padding: "80px 0 40px", textAlign: "center" }}>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ fontFamily: "var(--serif)", fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: 24 }}
+        >
+          About Solven
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          style={{ fontSize: 18, color: "var(--ink-secondary)", maxWidth: 600, margin: "0 auto" }}
+        >
+          We are a team of engineers, designers, and strategists building the future of digital business.
+        </motion.p>
+      </div>
+      <About />
+      <Stats />
+      <Clients />
+      <CTA />
+    </div>
+  );
+}
+```
 ```

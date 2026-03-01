@@ -26,7 +26,7 @@ const contactInfo = [
   {
     icon: Phone,
     label: "Call Us",
-    value: "+91 80 4567 8900",
+    value: "+91 9552424533",
     sub: "Mon – Sat, 9 AM – 6 PM IST",
     color: "#0E8A7D",
     bg: "#F0FDFA",
@@ -36,7 +36,7 @@ const contactInfo = [
     icon: MapPin,
     label: "Visit Us",
     value: "Pune, India",
-    sub: "HSR Layout, Sector 2",
+    sub: "VJ grand central, Wakad, Pune",
     color: "#2D6BE4",
     bg: "#EFF6FF",
     href: "https://maps.google.com",

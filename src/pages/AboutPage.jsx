@@ -133,7 +133,7 @@ const teamMembers = [
     name: "NIHAR VISPUTE",
     role: "Founder & CEO",
     desc: "Serial entrepreneur with 12+ years in enterprise technology. Previously led engineering at a Fortune 500 SaaS company. Passionate about using AI to solve real-world business problems.",
-    avatar: "RS",
+    avatar: "NV",
     color: "#D35528",
     gradient: "linear-gradient(135deg, #D35528, #F59E0B)",
     socials: {
@@ -146,7 +146,7 @@ const teamMembers = [
     name: "Paras Deshmane",
     role: "Co-Founder & CTO",
     desc: "Full-stack architect and systems thinker. Ex-Google engineer with expertise in distributed systems, ML infrastructure, and cloud-native architectures. Leads our 25+ person engineering team.",
-    avatar: "AP",
+    avatar: "PD",
     color: "#2D6BE4",
     gradient: "linear-gradient(135deg, #2D6BE4, #60A5FA)",
     socials: {
@@ -160,7 +160,7 @@ const teamMembers = [
     name: "Maithili Sarolkar",
     role: "COO & CMO",
     desc: "Operations expert who scaled three startups from seed to Series B. MBA from IIM Bangalore. Ensures every project is delivered on time, within budget, and exceeding expectations.",
-    avatar: "VD",
+    avatar: "MS",
     color: "#0E8A7D",
     gradient: "linear-gradient(135deg, #0E8A7D, #34D399)",
     socials: {

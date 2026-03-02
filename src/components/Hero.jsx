@@ -161,19 +161,16 @@ export default function Hero() {
         </div>
 
         {/* ═══ DASHBOARD CAROUSEL ═══ */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ position: "relative", width: "100%" }}
         >
-          {/* Glow */}
           <div style={{ position: "absolute", inset: -20, top: 20, background: "linear-gradient(135deg, rgba(211,85,40,0.08), rgba(232,163,23,0.05), transparent)", borderRadius: 32, filter: "blur(40px)", pointerEvents: "none" }} />
 
-          {/* ── Outer wrapper with padding for buttons ── */}
           <div style={{ position: "relative", padding: "0 32px" }}>
 
-            {/* ── Left Nav Button ── */}
             <button
               onClick={() => paginate(-1)}
               aria-label="Previous dashboard"
@@ -215,7 +212,6 @@ export default function Hero() {
               <ChevronLeft size={22} />
             </button>
 
-            {/* ── Right Nav Button ── */}
             <button
               onClick={() => paginate(1)}
               aria-label="Next dashboard"
@@ -257,10 +253,8 @@ export default function Hero() {
               <ChevronRight size={22} />
             </button>
 
-            {/* ── Dashboard Card ── */}
             <div className="card-base" style={{ overflow: "hidden", borderRadius: 20, position: "relative", width: "100%",}}>
 
-              {/* Browser chrome */}
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 20px", background: "var(--cream)", borderBottom: "1px solid var(--border-light)" }}>
                 <div style={{ display: "flex", gap: 6 }}>
                   <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#FF5F57" }} />
@@ -281,7 +275,6 @@ export default function Hero() {
                 <div style={{ width: 40 }} />
               </div>
 
-              {/* Dashboard slide area */}
               <div style={{ position: "relative", overflow: "hidden", minHeight: 340 }}>
                 <AnimatePresence initial={false} custom={slideDir} mode="wait">
                   <motion.div
@@ -303,7 +296,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Dot Indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
             {dashboards.map((d, i) => (
               <button key={d.id}
@@ -317,7 +309,7 @@ export default function Hero() {
               />
             ))}
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       <style>{`

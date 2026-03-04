@@ -103,15 +103,15 @@ export default function Clients() {
                 cursor: "default",
                 userSelect: "none",
                 transition: "all 0.4s ease",
-                opacity: 0.6,
+                // opacity: 0.6,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "1";
+                // e.currentTarget.style.opacity = "1";
                 e.currentTarget.style.transform = "translateY(-4px) scale(1.12)";
                 e.currentTarget.style.filter = "grayscale(0)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "0.6";
+                // e.currentTarget.style.opacity = "0.6";
                 e.currentTarget.style.transform = "translateY(0) scale(1)";
                 e.currentTarget.style.filter = "grayscale(0.3)";
               }}

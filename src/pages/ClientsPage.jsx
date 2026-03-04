@@ -19,40 +19,23 @@ import {
   Maximize2,
 } from "lucide-react";
 
-import affordabledriveeducation from "../assets/Trustedby/affordabledriveeducation.png";
-import bhokarikarlawfirms from "../assets/Trustedby/bhokarikarlawfirms.png";
-import discover from "../assets/Trustedby/discover.png";
-import enterpriseglobal from "../assets/Trustedby/enterpriseglobal.png";
-import journey from "../assets/Trustedby/journey.svg";
-import paripoorn from "../assets/Trustedby/paripoorn.png";
-import samarth from "../assets/Trustedby/samarth.png";
-import Shrisiddhlogo from "../assets/Trustedby/Shrisiddhlogo.png";
-import varahivastu from "../assets/Trustedby/varahivastu.png";
-import zaratari from "../assets/Trustedby/zaratari.png";
-
-/* ═══ API FLASH CONFIG ═══ */
-const API_FLASH_KEY = "e9d0e2f95bb54a8fa33f7c3e00c40fb0"; // <-- Replace with your actual API key
-
-function getScreenshotUrl(websiteUrl, width = 1280, height = 800) {
-  return (
-    `https://api.apiflash.com/v1/urltoimage` +
-    `?access_key=${API_FLASH_KEY}` +
-    `&wait_until=page_loaded` +
-    `&url=${encodeURIComponent(websiteUrl)}` +
-    `&width=${width}` +
-    `&height=${height}` +
-    `&thumbnail_width=${Math.round(width / 2)}` +
-    `&format=jpeg` +
-    `&quality=80` +
-    `&fresh=true`
-  );
-}
+import affordabledriveeducation from "../assets/Screenshots/affordabledrivereducation.png";
+import bhokarikarlawfirms from "../assets/Screenshots/bhokarikarlawfirms.png";
+import discover from "../assets/Screenshots/discover.png";
+import enterpriseglobal from "../assets/Screenshots/enterpriseglobal.png";
+import journey from "../assets/Screenshots/journey.png";
+import paripoorn from "../assets/Screenshots/paripooranfood.png";
+import samarth from "../assets/Screenshots/samarth.png";
+import Shrisiddhlogo from "../assets/Screenshots/shrisiddha.png";
+import varahivastu from "../assets/Screenshots/varahivastu.png";
+import zaratari from "../assets/Screenshots/zaratari.png";
 
 /* ═══ CLIENT DATA ═══ */
 const clientsData = [
   {
     name: "Affordable Drive Education",
     logo: affordabledriveeducation,
+    screenshot: affordabledriveeducation, // TODO: Replace with actual screenshot import
     category: "Education",
     categoryIcon: GraduationCap,
     color: "#2D6BE4",
@@ -74,6 +57,7 @@ const clientsData = [
   {
     name: "Bhokarikar Law Firms",
     logo: bhokarikarlawfirms,
+    screenshot: bhokarikarlawfirms, // TODO: Replace with actual screenshot import
     category: "Legal",
     categoryIcon: Scale,
     color: "#7048D6",
@@ -95,6 +79,7 @@ const clientsData = [
   {
     name: "Discover",
     logo: discover,
+    screenshot: discover, // TODO: Replace with actual screenshot import
     category: "Travel",
     categoryIcon: Compass,
     color: "#0E8A7D",
@@ -116,6 +101,7 @@ const clientsData = [
   {
     name: "Enterprise Global",
     logo: enterpriseglobal,
+    screenshot: enterpriseglobal, // TODO: Replace with actual screenshot import
     category: "Enterprise",
     categoryIcon: Building2,
     color: "#D35528",
@@ -137,6 +123,7 @@ const clientsData = [
   {
     name: "Journey",
     logo: journey,
+    screenshot: journey, // TODO: Replace with actual screenshot import
     category: "Travel",
     categoryIcon: Plane,
     color: "#CA8A04",
@@ -158,6 +145,7 @@ const clientsData = [
   {
     name: "Paripoorn",
     logo: paripoorn,
+    screenshot: paripoorn, // TODO: Replace with actual screenshot import
     category: "Healthcare",
     categoryIcon: Heart,
     color: "#DC2626",
@@ -179,6 +167,7 @@ const clientsData = [
   {
     name: "Samarth",
     logo: samarth,
+    screenshot: samarth, // TODO: Replace with actual screenshot import
     category: "Education",
     categoryIcon: GraduationCap,
     color: "#0891B2",
@@ -200,6 +189,7 @@ const clientsData = [
   {
     name: "Shri Siddh",
     logo: Shrisiddhlogo,
+    screenshot: Shrisiddhlogo, // TODO: Replace with actual screenshot import
     category: "Retail",
     categoryIcon: Gem,
     color: "#059669",
@@ -221,6 +211,7 @@ const clientsData = [
   {
     name: "Varahi Vastu",
     logo: varahivastu,
+    screenshot: varahivastu, // TODO: Replace with actual screenshot import
     category: "Real Estate",
     categoryIcon: Building2,
     color: "#B45309",
@@ -242,6 +233,7 @@ const clientsData = [
   {
     name: "Zaratari",
     logo: zaratari,
+    screenshot: zaratari, // TODO: Replace with actual screenshot import
     category: "Food & Hospitality",
     categoryIcon: Leaf,
     color: "#8B5CF6",
@@ -264,12 +256,10 @@ const clientsData = [
 
 const categories = ["All", ...new Set(clientsData.map((c) => c.category))];
 
-/* ═══ WEBSITE PREVIEW COMPONENT (Screenshot API) ═══ */
-function WebsitePreview({ url, color, gradient, name }) {
+/* ═══ WEBSITE PREVIEW COMPONENT (Local Image) ═══ */
+function WebsitePreview({ url, screenshot, color, gradient, name }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
-  const screenshotUrl = getScreenshotUrl(url, 1280, 800);
 
   return (
     <div
@@ -439,7 +429,7 @@ function WebsitePreview({ url, color, gradient, name }) {
 
         {/* Screenshot image */}
         <img
-          src={screenshotUrl}
+          src={screenshot}
           alt={`${name} website screenshot`}
           onLoad={() => setLoading(false)}
           onError={() => {
@@ -459,12 +449,10 @@ function WebsitePreview({ url, color, gradient, name }) {
   );
 }
 
-/* ═══ EXPANDED PREVIEW COMPONENT (Screenshot API) ═══ */
-function ExpandedWebsitePreview({ url, color, name }) {
+/* ═══ EXPANDED PREVIEW COMPONENT (Local Image) ═══ */
+function ExpandedWebsitePreview({ url, screenshot, color, name }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
-  const screenshotUrl = getScreenshotUrl(url, 1440, 900);
 
   return (
     <div
@@ -537,7 +525,7 @@ function ExpandedWebsitePreview({ url, color, name }) {
 
       {/* Screenshot image */}
       <img
-        src={screenshotUrl}
+        src={screenshot}
         alt={`${name} website screenshot`}
         onLoad={() => setLoading(false)}
         onError={() => {
@@ -918,6 +906,7 @@ export default function ClientsPage() {
                         <div style={{ marginBottom: 18 }}>
                           <WebsitePreview
                             url={client.website}
+                            screenshot={client.screenshot}
                             color={client.color}
                             gradient={client.gradient}
                             name={client.name}
@@ -1240,6 +1229,7 @@ export default function ClientsPage() {
                               {/* Large screenshot */}
                               <ExpandedWebsitePreview
                                 url={client.website}
+                                screenshot={client.screenshot}
                                 color={client.color}
                                 name={client.name}
                               />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-const API_URL = "https://solven.in/api/contact.php";
+const API_URL = "https://solven.in/contact.php";
 
 import {
   Mail,

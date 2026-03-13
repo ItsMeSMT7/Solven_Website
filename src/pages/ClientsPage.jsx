@@ -1499,7 +1499,7 @@ export default function ClientsPage() {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section style={{ padding: "0 0 100px" }}>
+            <section style={{ padding: "0 0 100px" }}>
         <div className="container-x">
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.98 }}
@@ -1509,14 +1509,17 @@ export default function ClientsPage() {
               duration: 0.7,
               ease: [0.22, 1, 0.36, 1],
             }}
+            className="cta-card"
             style={{
               position: "relative",
               overflow: "hidden",
               borderRadius: 28,
               background:
-                "linear-gradient(135deg, #1a0f07, #2d1810, #1a1005)",
+                "linear-gradient(135deg, #00174A 0%, #0B3D91 40%, #2DA7FF 100%)",
+              border: "1px solid rgba(255,255,255,0.06)",
             }}
           >
+            {/* Dot overlay */}
             <div
               style={{
                 position: "absolute",
@@ -1525,8 +1528,37 @@ export default function ClientsPage() {
                 backgroundImage:
                   "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
+                pointerEvents: "none",
               }}
             />
+
+            {/* Noise grain */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: 0.018,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+                backgroundSize: "128px 128px",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Top edge highlight */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "12%",
+                right: "12%",
+                height: 1,
+                background:
+                  "linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.15) 60%, transparent)",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Blob: top-right bright */}
             <div
               style={{
                 position: "absolute",
@@ -1535,18 +1567,35 @@ export default function ClientsPage() {
                 width: 350,
                 height: 350,
                 borderRadius: "50%",
-                background: "rgba(211,85,40,0.12)",
+                background: "rgba(45, 167, 255, 0.20)",
                 filter: "blur(80px)",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Blob: bottom-left dark */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: -60,
+                left: -60,
+                width: 280,
+                height: 280,
+                borderRadius: "50%",
+                background: "rgba(0, 23, 74, 0.30)",
+                filter: "blur(60px)",
+                pointerEvents: "none",
               }}
             />
 
             <div
               style={{
                 position: "relative",
-                padding: "64px 32px",
+                padding: "72px 32px 64px",
                 textAlign: "center",
               }}
             >
+              {/* Badge pill */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1559,25 +1608,29 @@ export default function ClientsPage() {
                   padding: "8px 18px",
                   borderRadius: 100,
                   background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
                   marginBottom: 28,
                 }}
               >
                 <Sparkles
                   size={14}
-                  style={{ color: "#E8A317" }}
+                  style={{ color: "#60A5FA" }}
                 />
                 <span
                   style={{
                     fontSize: 13,
                     fontWeight: 700,
-                    color: "rgba(255,255,255,0.8)",
+                    color: "rgba(255,255,255,0.85)",
+                    letterSpacing: "0.02em",
                   }}
                 >
                   Become our next success story
                 </span>
               </motion.div>
 
+              {/* Heading */}
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1587,13 +1640,26 @@ export default function ClientsPage() {
                   fontFamily: "var(--serif)",
                   color: "#fff",
                   fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
+                  lineHeight: 1.2,
                   maxWidth: 580,
                   margin: "0 auto 20px",
                 }}
               >
-                Ready to join our happy clients?
+                Ready to join our{" "}
+                <span
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #ffffff 0%, #90C9FF 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  happy clients?
+                </span>
               </motion.h2>
 
+              {/* Subtext */}
               <motion.p
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1601,7 +1667,8 @@ export default function ClientsPage() {
                 transition={{ delay: 0.4 }}
                 style={{
                   fontSize: 16,
-                  color: "rgba(255,255,255,0.5)",
+                  lineHeight: 1.7,
+                  color: "rgba(255,255,255,0.50)",
                   maxWidth: 440,
                   margin: "0 auto 32px",
                 }}
@@ -1610,6 +1677,7 @@ export default function ClientsPage() {
                 transformative results.
               </motion.p>
 
+              {/* Button */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1627,8 +1695,21 @@ export default function ClientsPage() {
                   className="btn-fill"
                   style={{
                     background: "#fff",
-                    color: "var(--ink)",
+                    color: "#00174A",
                     textDecoration: "none",
+                    transition:
+                      "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 32px rgba(45, 167, 255, 0.28)";
+                    e.currentTarget.style.transform =
+                      "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.transform =
+                      "translateY(0)";
                   }}
                 >
                   Start Your Project <ArrowRight size={16} />

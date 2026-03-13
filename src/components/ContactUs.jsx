@@ -460,22 +460,24 @@ export default function ContactUs() {
     borderRadius: 14,
     border: "none",
     cursor: loading ? "not-allowed" : "pointer",
-    background: "linear-gradient(135deg, var(--accent), #c44a1e)",
+    background: "#00174A",
     color: "#fff",
     transition: "all 0.35s ease",
-    boxShadow: "0 4px 16px rgba(211,85,40,0.2)",
+    boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)",
     width: "100%",
     opacity: loading ? 0.7 : 1,
   }}
   onMouseEnter={(e) => {
     if (!loading) {
       e.currentTarget.style.boxShadow =
-        "0 8px 32px rgba(211,85,40,0.35)";
+        "0 8px 32px rgba(0, 23, 74, 0.35)";
+      e.currentTarget.style.background = "#0B3D91";
     }
   }}
   onMouseLeave={(e) => {
     e.currentTarget.style.boxShadow =
-      "0 4px 16px rgba(211,85,40,0.2)";
+      "0 4px 16px rgba(0, 23, 74, 0.2)";
+    e.currentTarget.style.background = "#00174A";
   }}
 >
   {loading ? "Sending..." : "Send Message"}

@@ -74,7 +74,12 @@ export default function ProductDemo() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="btn-primary !rounded-xl group">
+              <button
+                className="btn-primary !rounded-xl group"
+                style={{ backgroundColor: "#00174A", color: "#fff", borderColor: "#00174A" }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#0B3D91"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#00174A"}
+              >
                 <span className="flex items-center gap-2">
                   View documentation
                   <ArrowUpRight

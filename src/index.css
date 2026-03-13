@@ -40,6 +40,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--white);
+  min-height: 100vh;
   color: var(--ink);
 }
 
@@ -114,12 +115,19 @@ button { font-family: var(--sans); }
   border: 1px solid var(--border-light);
   border-radius: 20px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  color: var(--ink);
   transition: all 0.45s var(--ease-spring);
 }
 .card-base:hover {
   box-shadow: 0 16px 56px rgba(0,0,0,0.08);
   border-color: var(--border);
   transform: translateY(-6px);
+}
+
+/* ═══ GLASS CARD ═══ */
+.glass-card {
+  background: #fff;
+  border-radius: 20px;
 }
 
 /* ═══ BUTTONS ═══ */
@@ -214,6 +222,12 @@ button { font-family: var(--sans); }
 }
 .footer-section a:hover {
   color: #FFF;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent), var(--amber));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ═══ PING ANIMATION ═══ */

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Code2, Brain, Cloud, Smartphone, BarChart3, ShieldCheck } from "lucide-react";
+import { Code2, Brain, Cloud, Smartphone, BarChart3, ShieldCheck , Megaphone } from "lucide-react";
 
 const services = [
   { icon: Code2, title: "Custom Software Development", desc: "End-to-end product engineering — from architecture to deployment. Scalable, maintainable systems tailored for your business.", color: "#2D6BE4", bg: "#EFF6FF", gradient: "linear-gradient(135deg, #2D6BE4, #60A5FA)" },
@@ -9,6 +9,7 @@ const services = [
   { icon: Smartphone, title: "Mobile Applications", desc: "Native and cross-platform mobile experiences. iOS, Android, React Native, and Flutter expertise.", color: "#7048D6", bg: "#F5F3FF", gradient: "linear-gradient(135deg, #7048D6, #A78BFA)" },
   { icon: BarChart3, title: "Data Analytics", desc: "Unlock insights from your data. Warehousing, real-time pipelines, dashboards, and business intelligence.", color: "#CA8A04", bg: "#FEFCE8", gradient: "linear-gradient(135deg, #CA8A04, #FBBF24)" },
   { icon: ShieldCheck, title: "Cybersecurity Solutions", desc: "Protect your digital assets. Penetration testing, compliance audits, SOC operations, zero-trust architecture.", color: "#DC2626", bg: "#FEF2F2", gradient: "linear-gradient(135deg, #DC2626, #F87171)" },
+  { icon: Megaphone, title: "Digital Marketing", desc: "Grow your brand with data-driven marketing strategies. SEO, social media marketing, paid ads, content marketing, and performance analytics to reach the right audience.", color: "#0EA5A4", bg: "#ECFEFF", gradient: "linear-gradient(135deg, #0EA5A4, #22D3EE)" },
 ];
 
 export default function Services() {

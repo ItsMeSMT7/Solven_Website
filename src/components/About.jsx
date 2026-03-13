@@ -635,7 +635,20 @@ export default function About() {
               ))}
             </div>
 
-            <button className="btn-fill">
+            <button
+              className="btn-fill"
+              style={{ background: "#00174A", color: "#fff", border: "none", boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)", transition: "all 0.3s ease" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#0B3D91";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 23, 74, 0.3)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#00174A";
+                e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
               Learn about us <ArrowUpRight size={16} />
             </button>
           </motion.div>

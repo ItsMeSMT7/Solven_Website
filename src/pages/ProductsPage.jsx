@@ -580,13 +580,9 @@ export default function ProductsPage() {
               transition={{ duration: 0.5, delay: 0.4 }}
               style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}
             >
-              <button
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", fontSize: 15, fontWeight: 700, fontFamily: "var(--sans)", borderRadius: 100, border: "none", cursor: "pointer", background: "#00174A", color: "#fff", transition: "all 0.35s ease", boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#0B3D91"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 23, 74, 0.35)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#00174A"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)"; }}
-            >
+              <Link to="/#contactus" className="btn-fill" style={{ textDecoration: "none" }}>
                 Request a Demo <Sparkles size={16} />
-              </button>
+              </Link>
               <Link
                 to="/services"
                 style={{
@@ -840,13 +836,10 @@ export default function ProductsPage() {
                           onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)";
                             e.currentTarget.style.boxShadow = `0 8px 28px ${product.color}30`;
-                            e.currentTarget.style.background = "#0B3D91"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 23, 74, 0.35)";
-
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
                             e.currentTarget.style.boxShadow = `0 4px 16px ${product.color}20`;
-                             e.currentTarget.style.background = "#00174A"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)";
                           }}
                         >
                           Request Demo <ArrowRight size={14} />
@@ -1000,57 +993,22 @@ export default function ProductsPage() {
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="cta-card"
             style={{
               position: "relative",
               overflow: "hidden",
               borderRadius: 28,
-              /* ── Blue diagonal gradient ── */
-              background:
-                "linear-gradient(135deg, #00174A 0%, #0B3D91 40%, #2DA7FF 100%)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "linear-gradient(135deg, #1a0f07, #2d1810, #1a1005)",
             }}
           >
-            {/* Dot overlay */}
             <div
               style={{
                 position: "absolute",
                 inset: 0,
                 opacity: 0.06,
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
-                pointerEvents: "none",
               }}
             />
-
-            {/* Noise grain */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                opacity: 0.018,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                backgroundSize: "128px 128px",
-                pointerEvents: "none",
-              }}
-            />
-
-            {/* Top edge highlight */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: "12%",
-                right: "12%",
-                height: 1,
-                background:
-                  "linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 40%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.15) 60%, transparent)",
-                pointerEvents: "none",
-              }}
-            />
-
-            {/* Blob: top-right bright */}
             <div
               style={{
                 position: "absolute",
@@ -1059,13 +1017,10 @@ export default function ProductsPage() {
                 width: 350,
                 height: 350,
                 borderRadius: "50%",
-                background: "rgba(45, 167, 255, 0.18)",
+                background: "rgba(45,107,228,0.12)",
                 filter: "blur(80px)",
-                pointerEvents: "none",
               }}
             />
-
-            {/* Blob: bottom-left dark */}
             <div
               style={{
                 position: "absolute",
@@ -1074,20 +1029,12 @@ export default function ProductsPage() {
                 width: 280,
                 height: 280,
                 borderRadius: "50%",
-                background: "rgba(0, 23, 74, 0.30)",
+                background: "rgba(211,85,40,0.1)",
                 filter: "blur(60px)",
-                pointerEvents: "none",
               }}
             />
 
-            <div
-              style={{
-                position: "relative",
-                padding: "72px 32px 64px",
-                textAlign: "center",
-              }}
-            >
-              {/* Badge pill */}
+            <div style={{ position: "relative", padding: "64px 32px", textAlign: "center" }}>
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1100,26 +1047,16 @@ export default function ProductsPage() {
                   padding: "8px 18px",
                   borderRadius: 100,
                   background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
                   marginBottom: 28,
                 }}
               >
-                <Sparkles size={14} style={{ color: "#60A5FA" }} />
-                <span
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.85)",
-                    letterSpacing: "0.02em",
-                  }}
-                >
+                <Sparkles size={14} style={{ color: "#E8A317" }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>
                   Start your free trial
                 </span>
               </motion.div>
 
-              {/* Heading */}
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1129,26 +1066,13 @@ export default function ProductsPage() {
                   fontFamily: "var(--serif)",
                   color: "#fff",
                   fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
-                  lineHeight: 1.2,
                   maxWidth: 580,
                   margin: "0 auto 20px",
                 }}
               >
-                Experience our products{" "}
-                <span
-                  style={{
-                    background:
-                      "linear-gradient(90deg, #ffffff 0%, #90C9FF 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  first-hand
-                </span>
+                Experience our products first-hand
               </motion.h2>
 
-              {/* Subtext */}
               <motion.p
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1156,48 +1080,26 @@ export default function ProductsPage() {
                 transition={{ delay: 0.4 }}
                 style={{
                   fontSize: 16,
-                  lineHeight: 1.7,
-                  color: "rgba(255,255,255,0.50)",
+                  color: "rgba(255,255,255,0.5)",
                   maxWidth: 440,
                   margin: "0 auto 32px",
                 }}
               >
-                Schedule a personalized demo and see how our AI-powered products
-                can transform your operations.
+                Schedule a personalized demo and see how our AI-powered products can transform
+                your operations.
               </motion.p>
 
-              {/* Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: 14,
-                }}
+                style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}
               >
                 <Link
                   to="/#contactus"
                   className="btn-fill"
-                  style={{
-                    background: "#fff",
-                    color: "#00174A",
-                    textDecoration: "none",
-                    transition:
-                      "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 32px rgba(45, 167, 255, 0.28)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
+                  style={{ background: "#fff", color: "var(--ink)", textDecoration: "none" }}
                 >
                   Schedule a Demo <ArrowRight size={16} />
                 </Link>
@@ -1211,81 +1113,24 @@ export default function ProductsPage() {
                     fontSize: 15,
                     fontWeight: 700,
                     borderRadius: 100,
-                    border: "1px solid rgba(255,255,255,0.15)",
+                    border: "1px solid rgba(255,255,255,0.2)",
                     background: "transparent",
                     color: "#fff",
                     textDecoration: "none",
-                    transition:
-                      "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+                    transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.08)";
-                    e.currentTarget.style.borderColor =
-                      "rgba(255,255,255,0.30)";
-                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "transparent";
-                    e.currentTarget.style.borderColor =
-                      "rgba(255,255,255,0.15)";
-                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
                   }}
                 >
                   Explore Services
                 </Link>
               </motion.div>
-
-              
-              {/* <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 28,
-                  marginTop: 40,
-                  flexWrap: "wrap",
-                }}
-              >
-                {[
-                  "Enterprise Ready",
-                  "99.9% Uptime",
-                  "SOC 2 Compliant",
-                ].map((label, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 7,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 5,
-                        height: 5,
-                        borderRadius: "50%",
-                        background: "#2DA7FF",
-                        boxShadow: "0 0 8px rgba(45,167,255,0.4)",
-                      }}
-                    />
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 500,
-                        color: "rgba(255,255,255,0.32)",
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                ))}
-              </motion.div> */}
             </div>
           </motion.div>
         </div>

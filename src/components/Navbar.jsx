@@ -26,6 +26,7 @@ export default function Navbar() {
     document.body.style.overflow = open ? "hidden" : "";
   }, [open]);
 
+  // Handle hash-based navigation from other pages
   useEffect(() => {
     if (location.hash) {
       setTimeout(() => {
@@ -36,8 +37,7 @@ export default function Navbar() {
   }, [location]);
 
   const isActive = (href) => {
-    if (href.startsWith("/#"))
-      return location.pathname === "/" && location.hash === href.slice(1);
+    if (href.startsWith("/#")) return location.pathname === "/" && location.hash === href.slice(1);
     return location.pathname === href;
   };
 
@@ -48,6 +48,26 @@ export default function Navbar() {
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
     setOpen(false);
+  };
+
+  const renderLink = (l, children, style, handlers = {}) => {
+    if (l.href.startsWith("/#")) {
+      return (
+        <Link
+          to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
+          style={style}
+          onClick={(e) => handleNavClick(l.href, e)}
+          {...handlers}
+        >
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <Link to={l.href} style={style} onClick={() => setOpen(false)} {...handlers}>
+        {children}
+      </Link>
+    );
   };
 
   return (
@@ -75,17 +95,16 @@ export default function Navbar() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            /* ── Scrolled: deep navy | Default: white glass ── */
             background: scrolled
-              ? "rgba(0, 23, 74, 0.92)"
+              ? "rgba(26, 26, 26, 0.92)"
               : "rgba(255, 255, 255, 0.75)",
             backdropFilter: "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
             border: scrolled
-              ? "1px solid rgba(45, 167, 255, 0.12)"
+              ? "1px solid rgba(255,255,255,0.08)"
               : "1px solid rgba(0,0,0,0.06)",
             boxShadow: scrolled
-              ? "0 4px 24px rgba(0, 23, 74, 0.35)"
+              ? "0 4px 24px rgba(0,0,0,0.25)"
               : "0 2px 16px rgba(0,0,0,0.06)",
             transition: "all 0.45s cubic-bezier(0.22,1,0.36,1)",
           }}
@@ -93,13 +112,6 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            onClick={(e) => {
-              if (location.pathname === "/") {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }
-              setOpen(false);
-            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -131,11 +143,7 @@ export default function Navbar() {
               return (
                 <Link
                   key={l.label}
-                  to={
-                    l.href.startsWith("/#")
-                      ? "/" + l.href.slice(1)
-                      : l.href
-                  }
+                  to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
                   onClick={(e) => handleNavClick(l.href, e)}
                   style={{
                     padding: "7px 16px",
@@ -146,7 +154,7 @@ export default function Navbar() {
                         ? "#fff"
                         : "rgba(255,255,255,0.6)"
                       : active
-                      ? "#0B3D91"
+                      ? "var(--accent)"
                       : "var(--ink-secondary)",
                     borderRadius: 100,
                     transition: "all 0.3s ease",
@@ -154,35 +162,30 @@ export default function Navbar() {
                     whiteSpace: "nowrap",
                     background: active
                       ? scrolled
-                        ? "rgba(45, 167, 255, 0.15)"
-                        : "rgba(11, 61, 145, 0.08)"
+                        ? "rgba(255,255,255,0.1)"
+                        : "var(--accent-bg)"
                       : "transparent",
                   }}
                   onMouseEnter={(e) => {
                     if (!active) {
                       if (scrolled) {
                         e.currentTarget.style.color = "#fff";
-                        e.currentTarget.style.background =
-                          "rgba(45, 167, 255, 0.12)";
+                        e.currentTarget.style.background = "rgba(255,255,255,0.1)";
                       } else {
-                        e.currentTarget.style.color = "#0B3D91";
-                        e.currentTarget.style.background =
-                          "rgba(11, 61, 145, 0.06)";
+                        e.currentTarget.style.color = "var(--accent)";
+                        e.currentTarget.style.background = "var(--accent-bg)";
                       }
                     }
-                    e.currentTarget.style.transform =
-                      "translateY(-1px)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
                     if (!active) {
                       e.currentTarget.style.color = scrolled
                         ? "rgba(255,255,255,0.6)"
                         : "var(--ink-secondary)";
-                      e.currentTarget.style.background =
-                        "transparent";
+                      e.currentTarget.style.background = "transparent";
                     }
-                    e.currentTarget.style.transform =
-                      "translateY(0)";
+                    e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
                   {l.label}
@@ -194,11 +197,7 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div
             className="hidden lg:flex"
-            style={{
-              alignItems: "center",
-              gap: 8,
-              flexShrink: 0,
-            }}
+            style={{ alignItems: "center", gap: 8, flexShrink: 0 }}
           >
             <Link
               to="/#contactus"
@@ -210,8 +209,8 @@ export default function Navbar() {
                 borderRadius: 100,
                 border: "none",
                 cursor: "pointer",
-                background: scrolled ? "#fff" : "#0B3D91",
-                color: scrolled ? "#00174A" : "#fff",
+                background: scrolled ? "#fff" : "var(--accent)",
+                color: scrolled ? "var(--ink)" : "#fff",
                 transition: "all 0.3s ease",
                 whiteSpace: "nowrap",
                 textDecoration: "none",
@@ -219,28 +218,24 @@ export default function Navbar() {
               }}
               onMouseEnter={(e) => {
                 if (scrolled) {
-                  e.currentTarget.style.background = "#2DA7FF";
+                  e.currentTarget.style.background = "var(--accent)";
                   e.currentTarget.style.color = "#fff";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 20px rgba(45, 167, 255, 0.35)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(211,85,40,0.35)";
                 } else {
-                  e.currentTarget.style.background = "#00174A";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 20px rgba(0, 23, 74, 0.30)";
+                  e.currentTarget.style.background = "var(--accent-dark)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(211,85,40,0.3)";
                 }
-                e.currentTarget.style.transform =
-                  "translateY(-1px)";
+                e.currentTarget.style.transform = "translateY(-1px)";
               }}
               onMouseLeave={(e) => {
                 if (scrolled) {
                   e.currentTarget.style.background = "#fff";
-                  e.currentTarget.style.color = "#00174A";
+                  e.currentTarget.style.color = "var(--ink)";
                 } else {
-                  e.currentTarget.style.background = "#0B3D91";
+                  e.currentTarget.style.background = "var(--accent)";
                 }
                 e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.transform =
-                  "translateY(0)";
+                e.currentTarget.style.transform = "translateY(0)";
               }}
             >
               Get Started
@@ -301,11 +296,7 @@ export default function Navbar() {
                   transition={{ delay: i * 0.06 }}
                 >
                   <Link
-                    to={
-                      l.href.startsWith("/#")
-                        ? "/" + l.href.slice(1)
-                        : l.href
-                    }
+                    to={l.href.startsWith("/#") ? "/" + l.href.slice(1) : l.href}
                     onClick={(e) => handleNavClick(l.href, e)}
                     style={{
                       fontFamily: "var(--serif)",
@@ -337,15 +328,7 @@ export default function Navbar() {
                 to="/#contactus"
                 onClick={(e) => handleNavClick("/#contactus", e)}
                 className="btn-fill"
-                style={{
-                  width: "100%",
-                  fontSize: 16,
-                  textAlign: "center",
-                  textDecoration: "none",
-                  /* ── Blue CTA in mobile menu ── */
-                  background: "#0B3D91",
-                  color: "#fff",
-                }}
+                style={{ width: "100%", fontSize: 16, textAlign: "center", textDecoration: "none" }}
               >
                 Get Started
               </Link>
@@ -356,7 +339,6 @@ export default function Navbar() {
     </>
   );
 }
-
 
 
 

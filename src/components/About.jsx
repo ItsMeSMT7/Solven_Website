@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 
-/* ── Orbit Data — split into inner ring & outer ring ── */
+/* ── Orbit Data ── */
 const innerRingItems = [
   { label: "AI/ML", color: "#D35528" },
   { label: "Cloud", color: "#2D6BE4" },
@@ -21,24 +21,12 @@ const outerRingItems = [
 
 const PARTICLE_COUNT = 240;
 
-/*
-  3 circles (from CSS inset values):
-    innermost  → inset 35%  → radius = 15% from center
-    middle     → inset 20%  → radius = 30% from center
-    outermost  → inset 6%   → radius = 44% from center
+const INNER_CIRCLE_R = 15;
+const MIDDLE_CIRCLE_R = 30;
+const OUTER_CIRCLE_R = 44;
 
-  Particles home:  inside innermost circle (radius ≤ 15%)
-  Inner orbit:     moves along middle circle  (radius = 30%)
-  Outer orbit:     moves along outer circle   (radius = 44%)
-  Spread limit:    particles fill up to outer circle (radius ≤ 44%)
-*/
-
-const INNER_CIRCLE_R = 15;   // % — innermost circle radius (particles home)
-const MIDDLE_CIRCLE_R = 30;  // % — middle circle radius (inner orbit items)
-const OUTER_CIRCLE_R = 44;   // % — outer circle radius (outer orbit items)
-
-const INNER_SPEED = 0.18;    // rad/s for inner ring
-const OUTER_SPEED = 0.12;    // rad/s for outer ring (slower, looks natural)
+const INNER_SPEED = 0.18;
+const OUTER_SPEED = 0.12;
 
 const dotColors = [
   "#D35528", "#2D6BE4", "#0E8A7D", "#7048D6",
@@ -57,7 +45,7 @@ const points = [
 /* ═══════════════════════════════════════════
    PARTICLE CANVAS
    ═══════════════════════════════════════════ */
-function ParticleField({ isHovered, containerSize }) {
+function ParticleField({ isHovered, containerSize, innerR, outerR }) {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const animIdRef = useRef(null);
@@ -74,7 +62,6 @@ function ParticleField({ isHovered, containerSize }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    // ═══ USE ACTUAL CANVAS CLIENT SIZE FOR PERFECT CENTERING ═══
     const actualW = canvas.clientWidth;
     const actualH = canvas.clientHeight;
 
@@ -83,25 +70,19 @@ function ParticleField({ isHovered, containerSize }) {
     canvas.height = actualH * dpr;
     ctx.scale(dpr, dpr);
 
-    // ═══ TRUE VISUAL CENTER OF THE CANVAS ═══
     const cx = actualW / 2;
     const cy = actualH / 2;
     const size = Math.min(actualW, actualH);
 
-    // Particles clustered inside innermost circle
-    const homeR = size * (INNER_CIRCLE_R / 100);
-
-    // Spread fills up to outer circle
-    const spreadMaxR = size * (OUTER_CIRCLE_R / 100);
+    const homeR = size * (innerR / 100);
+    const spreadMaxR = size * (outerR / 100);
 
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => {
-      // Home: tightly packed at TRUE center
       const hAngle = Math.random() * Math.PI * 2;
       const hDist = Math.pow(Math.random(), 0.45) * homeR;
       const homeX = cx + Math.cos(hAngle) * hDist;
       const homeY = cy + Math.sin(hAngle) * hDist;
 
-      // Spread: distributed across all 3 circles from TRUE center
       const sAngle = Math.random() * Math.PI * 2;
       const sDist = Math.pow(Math.random(), 0.6) * spreadMaxR;
       const spreadX = cx + Math.cos(sAngle) * sDist;
@@ -139,7 +120,6 @@ function ParticleField({ isHovered, containerSize }) {
         p.x += (tX + ox - p.x) * p.speed;
         p.y += (tY + oy - p.y) * p.speed;
 
-        // Clamp inside outer circle from TRUE center
         const dx = p.x - cx;
         const dy = p.y - cy;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -153,14 +133,12 @@ function ParticleField({ isHovered, containerSize }) {
         const pulse = 0.85 + 0.15 * Math.sin(p.pulsePhase);
         const alpha = p.baseOpacity * pulse * (spread ? 0.82 : 0.72);
 
-        // Dot
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.globalAlpha = alpha;
         ctx.fill();
 
-        // Glow halo
         if (p.size > 2.2) {
           const glowMul = spread ? 3.5 : 2.8;
           const glowAlpha = spread ? 0.13 : 0.08;
@@ -178,7 +156,6 @@ function ParticleField({ isHovered, containerSize }) {
         }
       });
 
-      // Connecting lines
       ctx.lineWidth = 0.5;
       const checkStep = spread ? 2 : 3;
       for (let i = 0; i < particles.length; i += checkStep) {
@@ -200,7 +177,6 @@ function ParticleField({ isHovered, containerSize }) {
         }
       }
 
-      // Central glow at TRUE center
       const glowAlpha = spread ? 0.04 : 0.12;
       const glowR = spread ? spreadMaxR * 0.5 : homeR * 0.9;
       const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
@@ -221,7 +197,7 @@ function ParticleField({ isHovered, containerSize }) {
     return () => {
       if (animIdRef.current) cancelAnimationFrame(animIdRef.current);
     };
-  }, [containerSize]);
+  }, [containerSize, innerR, outerR]);
 
   return (
     <canvas
@@ -247,6 +223,7 @@ export default function About() {
   const [paused, setPaused] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [containerSize, setContainerSize] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const orbitRef = useRef(null);
   const innerItemRefs = useRef([]);
@@ -254,25 +231,42 @@ export default function About() {
   const animRef = useRef(null);
   const timeRef = useRef(0);
   const pausedRef = useRef(false);
+  const isMobileRef = useRef(false);
 
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
 
-  // Measure container
+  useEffect(() => {
+    isMobileRef.current = isMobile;
+  }, [isMobile]);
+
   useEffect(() => {
     const measure = () => {
       if (orbitRef.current) {
         const rect = orbitRef.current.getBoundingClientRect();
         setContainerSize(Math.min(rect.width, rect.height));
       }
+      setIsMobile(window.innerWidth < 768);
     };
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  /* ── JS-driven orbit: two rings, items locked to their circle ── */
+  const orbitRadii = isMobile
+    ? { innerCircle: 12, middleCircle: 22, outerCircle: 34 }
+    : {
+        innerCircle: INNER_CIRCLE_R,
+        middleCircle: MIDDLE_CIRCLE_R,
+        outerCircle: OUTER_CIRCLE_R,
+      };
+
+  const outerInset = `${50 - orbitRadii.outerCircle}%`;
+  const middleInset = `${50 - orbitRadii.middleCircle}%`;
+  const innerInset = `${50 - orbitRadii.innerCircle}%`;
+
+  /* ── JS-driven orbit ── */
   useEffect(() => {
     let prev = null;
 
@@ -286,35 +280,26 @@ export default function About() {
       }
 
       const t = timeRef.current;
+      const mobile = isMobileRef.current;
+      const mR = mobile ? 22 : MIDDLE_CIRCLE_R;
+      const oR = mobile ? 34 : OUTER_CIRCLE_R;
 
-      // Inner ring items — along MIDDLE circle
       innerRingItems.forEach((_, i) => {
         const el = innerItemRefs.current[i];
         if (!el) return;
-
         const baseAngle = ((2 * Math.PI) / innerRingItems.length) * i;
         const angle = baseAngle + t * INNER_SPEED;
-
-        const x = 50 + MIDDLE_CIRCLE_R * Math.cos(angle);
-        const y = 50 + MIDDLE_CIRCLE_R * Math.sin(angle);
-
-        el.style.left = `${x}%`;
-        el.style.top = `${y}%`;
+        el.style.left = `${50 + mR * Math.cos(angle)}%`;
+        el.style.top = `${50 + mR * Math.sin(angle)}%`;
       });
 
-      // Outer ring items — along OUTER circle
       outerRingItems.forEach((_, i) => {
         const el = outerItemRefs.current[i];
         if (!el) return;
-
         const baseAngle = ((2 * Math.PI) / outerRingItems.length) * i;
-        const angle = baseAngle - t * OUTER_SPEED; // reverse direction
-
-        const x = 50 + OUTER_CIRCLE_R * Math.cos(angle);
-        const y = 50 + OUTER_CIRCLE_R * Math.sin(angle);
-
-        el.style.left = `${x}%`;
-        el.style.top = `${y}%`;
+        const angle = baseAngle - t * OUTER_SPEED;
+        el.style.left = `${50 + oR * Math.cos(angle)}%`;
+        el.style.top = `${50 + oR * Math.sin(angle)}%`;
       });
 
       animRef.current = requestAnimationFrame(tick);
@@ -324,12 +309,16 @@ export default function About() {
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
       id="about"
-      style={{ padding: "100px 0 120px", background: "var(--cream)" }}
+      className="about-section"
+      style={{
+        padding: isMobile ? "60px 0 80px" : "100px 0 120px",
+        background: "var(--cream)",
+      }}
     >
       <div className="container-x">
         <div
@@ -342,216 +331,267 @@ export default function About() {
           }}
         >
           {/* ── LEFT: Orbital Diagram ── */}
-          <motion.div
-            ref={orbitRef}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              position: "relative",
-              aspectRatio: "1",
-              maxWidth: 520,
-              margin: "0 auto",
-              width: "100%",
-            }}
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => {
-              setPaused(false);
-              setHoveredItem(null);
-            }}
-          >
-            {/* ── 3 Decorative circles ── */}
-            {/* Outermost circle — inset 6% — radius 44% */}
-            <div
+          <div className="orbit-centering-wrapper">
+            <motion.div
+              ref={orbitRef}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="orbit-container"
               style={{
-                position: "absolute",
-                inset: "6%",
-                borderRadius: "50%",
-                border: "1px dashed var(--border)",
-                opacity: 0.25,
-                pointerEvents: "none",
+                position: "relative",
+                aspectRatio: "1",
+                width: "100%",
               }}
-            />
-            {/* Middle circle — inset 20% — radius 30% */}
-            <div
-              style={{
-                position: "absolute",
-                inset: "20%",
-                borderRadius: "50%",
-                border: "1px solid var(--border)",
-                opacity: 0.3,
-                pointerEvents: "none",
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => {
+                setPaused(false);
+                setHoveredItem(null);
               }}
-            />
-            {/* Innermost circle — inset 35% — radius 15% */}
-            <div
-              style={{
-                position: "absolute",
-                inset: "35%",
-                borderRadius: "50%",
-                border: "1px solid var(--border-light)",
-                background: "rgba(211,85,40,0.02)",
-                pointerEvents: "none",
+              onTouchStart={() => setPaused(true)}
+              onTouchEnd={() => {
+                setTimeout(() => {
+                  setPaused(false);
+                  setHoveredItem(null);
+                }, 2000);
               }}
-            />
+            >
+              {/* ── Decorative circles ── */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: outerInset,
+                  borderRadius: "50%",
+                  border: "1px dashed var(--border)",
+                  opacity: 0.25,
+                  pointerEvents: "none",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: middleInset,
+                  borderRadius: "50%",
+                  border: "1px solid var(--border)",
+                  opacity: 0.3,
+                  pointerEvents: "none",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: innerInset,
+                  borderRadius: "50%",
+                  border: "1px solid var(--border-light)",
+                  background: "rgba(211,85,40,0.02)",
+                  pointerEvents: "none",
+                }}
+              />
 
-            {/* Pulse ring on outer circle */}
-            <div
-              className="orbit-pulse-ring"
-              style={{
-                position: "absolute",
-                inset: "6%",
-                borderRadius: "50%",
-                border: "1.5px solid rgba(211,85,40,0.12)",
-                pointerEvents: "none",
-              }}
-            />
+              {/* Pulse ring */}
+              <div
+                className="orbit-pulse-ring"
+                style={{
+                  position: "absolute",
+                  inset: outerInset,
+                  borderRadius: "50%",
+                  border: "1.5px solid rgba(211,85,40,0.12)",
+                  pointerEvents: "none",
+                }}
+              />
 
-            {/* ═══ PARTICLES — home inside innermost circle ═══ */}
-            <ParticleField
-              isHovered={paused}
-              containerSize={containerSize}
-            />
+              {/* ═══ PARTICLES ═══ */}
+              <ParticleField
+                isHovered={paused}
+                containerSize={containerSize}
+                innerR={orbitRadii.innerCircle}
+                outerR={orbitRadii.outerCircle}
+              />
 
-            {/* ── INNER RING ITEMS — on middle circle ── */}
-            {innerRingItems.map((item, i) => {
-              const key = `inner-${item.label}`;
-              const isH = hoveredItem === key;
+              {/* ── INNER RING ITEMS ── */}
+              {innerRingItems.map((item, i) => {
+                const key = `inner-${item.label}`;
+                const isH = hoveredItem === key;
+                const initAngle =
+                  ((2 * Math.PI) / innerRingItems.length) * i;
+                const initX =
+                  50 + orbitRadii.middleCircle * Math.cos(initAngle);
+                const initY =
+                  50 + orbitRadii.middleCircle * Math.sin(initAngle);
 
-              const initAngle = ((2 * Math.PI) / innerRingItems.length) * i;
-              const initX = 50 + MIDDLE_CIRCLE_R * Math.cos(initAngle);
-              const initY = 50 + MIDDLE_CIRCLE_R * Math.sin(initAngle);
-
-              return (
-                <div
-                  key={key}
-                  ref={(el) => (innerItemRefs.current[i] = el)}
-                  onMouseEnter={() => setHoveredItem(key)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  style={{
-                    position: "absolute",
-                    left: `${initX}%`,
-                    top: `${initY}%`,
-                    zIndex: isH ? 40 : 20,
-                    willChange: "left, top",
-                  }}
-                >
-                  <motion.div
-                    animate={isH ? { scale: 1.35, y: -5 } : { scale: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                return (
+                  <div
+                    key={key}
+                    ref={(el) => (innerItemRefs.current[i] = el)}
+                    onMouseEnter={() => setHoveredItem(key)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    onTouchStart={() => setHoveredItem(key)}
                     style={{
-                      transform: "translate(-50%, -50%)",
-                      background: "#fff",
-                      border: `2px solid ${isH ? item.color : "var(--border-light)"}`,
-                      borderRadius: 100,
-                      padding: "7px 15px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 7,
-                      whiteSpace: "nowrap",
-                      cursor: "pointer",
-                      boxShadow: isH
-                        ? `0 10px 30px ${item.color}30, 0 0 0 4px ${item.color}10`
-                        : "0 2px 8px rgba(0,0,0,0.04)",
-                      transition: "border-color 0.3s, box-shadow 0.3s",
+                      position: "absolute",
+                      left: `${initX}%`,
+                      top: `${initY}%`,
+                      zIndex: isH ? 40 : 20,
+                      willChange: "left, top",
                     }}
                   >
-                    <span
-                      style={{
-                        width: 9,
-                        height: 9,
-                        borderRadius: "50%",
-                        background: item.color,
-                        boxShadow: isH ? `0 0 12px ${item.color}90` : "none",
-                        transition: "box-shadow 0.3s",
-                        flexShrink: 0,
+                    <motion.div
+                      animate={
+                        isH
+                          ? {
+                              scale: isMobile ? 1.15 : 1.35,
+                              y: isMobile ? -2 : -5,
+                            }
+                          : { scale: 1, y: 0 }
+                      }
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 20,
                       }}
-                    />
-                    <span
+                      className="orbit-pill"
                       style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: isH ? item.color : "var(--ink-secondary)",
-                        transition: "color 0.3s",
+                        transform: "translate(-50%, -50%)",
+                        background: "#fff",
+                        border: `${isMobile ? 1.5 : 2}px solid ${
+                          isH ? item.color : "var(--border-light)"
+                        }`,
+                        borderRadius: 100,
+                        padding: isMobile ? "3px 7px" : "7px 15px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: isMobile ? 3 : 7,
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        boxShadow: isH
+                          ? `0 10px 30px ${item.color}30, 0 0 0 4px ${item.color}10`
+                          : "0 2px 8px rgba(0,0,0,0.04)",
+                        transition: "border-color 0.3s, box-shadow 0.3s",
                       }}
                     >
-                      {item.label}
-                    </span>
-                  </motion.div>
-                </div>
-              );
-            })}
+                      <span
+                        style={{
+                          width: isMobile ? 5 : 9,
+                          height: isMobile ? 5 : 9,
+                          borderRadius: "50%",
+                          background: item.color,
+                          boxShadow: isH
+                            ? `0 0 12px ${item.color}90`
+                            : "none",
+                          transition: "box-shadow 0.3s",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: isMobile ? 8 : 12,
+                          fontWeight: 700,
+                          color: isH
+                            ? item.color
+                            : "var(--ink-secondary)",
+                          transition: "color 0.3s",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    </motion.div>
+                  </div>
+                );
+              })}
 
-            {/* ── OUTER RING ITEMS — on outer circle ── */}
-            {outerRingItems.map((item, i) => {
-              const key = `outer-${item.label}`;
-              const isH = hoveredItem === key;
+              {/* ── OUTER RING ITEMS ── */}
+              {outerRingItems.map((item, i) => {
+                const key = `outer-${item.label}`;
+                const isH = hoveredItem === key;
+                const initAngle =
+                  ((2 * Math.PI) / outerRingItems.length) * i;
+                const initX =
+                  50 + orbitRadii.outerCircle * Math.cos(initAngle);
+                const initY =
+                  50 + orbitRadii.outerCircle * Math.sin(initAngle);
 
-              const initAngle = ((2 * Math.PI) / outerRingItems.length) * i;
-              const initX = 50 + OUTER_CIRCLE_R * Math.cos(initAngle);
-              const initY = 50 + OUTER_CIRCLE_R * Math.sin(initAngle);
-
-              return (
-                <div
-                  key={key}
-                  ref={(el) => (outerItemRefs.current[i] = el)}
-                  onMouseEnter={() => setHoveredItem(key)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  style={{
-                    position: "absolute",
-                    left: `${initX}%`,
-                    top: `${initY}%`,
-                    zIndex: isH ? 40 : 20,
-                    willChange: "left, top",
-                  }}
-                >
-                  <motion.div
-                    animate={isH ? { scale: 1.4, y: -6 } : { scale: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                return (
+                  <div
+                    key={key}
+                    ref={(el) => (outerItemRefs.current[i] = el)}
+                    onMouseEnter={() => setHoveredItem(key)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    onTouchStart={() => setHoveredItem(key)}
                     style={{
-                      transform: "translate(-50%, -50%)",
-                      background: "#fff",
-                      border: `2px solid ${isH ? item.color : "var(--border-light)"}`,
-                      borderRadius: 100,
-                      padding: "8px 18px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      whiteSpace: "nowrap",
-                      cursor: "pointer",
-                      boxShadow: isH
-                        ? `0 12px 36px ${item.color}30, 0 0 0 5px ${item.color}10`
-                        : "0 2px 8px rgba(0,0,0,0.04)",
-                      transition: "border-color 0.3s, box-shadow 0.3s",
+                      position: "absolute",
+                      left: `${initX}%`,
+                      top: `${initY}%`,
+                      zIndex: isH ? 40 : 20,
+                      willChange: "left, top",
                     }}
                   >
-                    <span
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        background: item.color,
-                        boxShadow: isH ? `0 0 14px ${item.color}90` : "none",
-                        transition: "box-shadow 0.3s",
-                        flexShrink: 0,
+                    <motion.div
+                      animate={
+                        isH
+                          ? {
+                              scale: isMobile ? 1.15 : 1.4,
+                              y: isMobile ? -2 : -6,
+                            }
+                          : { scale: 1, y: 0 }
+                      }
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 20,
                       }}
-                    />
-                    <span
+                      className="orbit-pill"
                       style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: isH ? item.color : "var(--ink-secondary)",
-                        transition: "color 0.3s",
+                        transform: "translate(-50%, -50%)",
+                        background: "#fff",
+                        border: `${isMobile ? 1.5 : 2}px solid ${
+                          isH ? item.color : "var(--border-light)"
+                        }`,
+                        borderRadius: 100,
+                        padding: isMobile ? "3px 8px" : "8px 18px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: isMobile ? 4 : 8,
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        boxShadow: isH
+                          ? `0 12px 36px ${item.color}30, 0 0 0 5px ${item.color}10`
+                          : "0 2px 8px rgba(0,0,0,0.04)",
+                        transition: "border-color 0.3s, box-shadow 0.3s",
                       }}
                     >
-                      {item.label}
-                    </span>
-                  </motion.div>
-                </div>
-              );
-            })}
-          </motion.div>
+                      <span
+                        style={{
+                          width: isMobile ? 6 : 10,
+                          height: isMobile ? 6 : 10,
+                          borderRadius: "50%",
+                          background: item.color,
+                          boxShadow: isH
+                            ? `0 0 14px ${item.color}90`
+                            : "none",
+                          transition: "box-shadow 0.3s",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: isMobile ? 9 : 13,
+                          fontWeight: 700,
+                          color: isH
+                            ? item.color
+                            : "var(--ink-secondary)",
+                          transition: "color 0.3s",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </motion.div>
+          </div>
 
           {/* ── RIGHT: Content ── */}
           <motion.div
@@ -628,27 +668,19 @@ export default function About() {
                       strokeWidth={3}
                     />
                   </div>
-                  <span style={{ fontSize: 15, color: "var(--ink-secondary)" }}>
+                  <span
+                    style={{
+                      fontSize: 15,
+                      color: "var(--ink-secondary)",
+                    }}
+                  >
                     {p}
                   </span>
                 </motion.div>
               ))}
             </div>
 
-            <button
-              className="btn-fill"
-              style={{ background: "#00174A", color: "#fff", border: "none", boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)", transition: "all 0.3s ease" }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#0B3D91";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 23, 74, 0.3)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#00174A";
-                e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
+            <button className="btn-fill">
               Learn about us <ArrowUpRight size={16} />
             </button>
           </motion.div>
@@ -663,10 +695,57 @@ export default function About() {
           0%, 100% { transform: scale(1); opacity: 0.3; }
           50%      { transform: scale(1.06); opacity: 0; }
         }
+
+        /* ── Section-level overflow control ── */
+        .about-section {
+          overflow-x: clip;
+          overflow-y: visible;
+        }
+
+        /* ── Desktop: orbit visible, centered ── */
+        .orbit-centering-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+        .orbit-container {
+          max-width: 520px;
+          overflow: visible !important;
+        }
+
+        /* ── Tablet ── */
         @media (max-width: 1023px) {
           .about-grid {
             grid-template-columns: 1fr !important;
             gap: 48px !important;
+          }
+          .orbit-centering-wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+          }
+        }
+
+        /* ── Mobile: clip only this wrapper ── */
+        @media (max-width: 767px) {
+          .orbit-centering-wrapper {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            overflow: hidden;
+            border-radius: 12px;
+          }
+          .orbit-container {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important;
+          }
+        }
+
+        @media (max-width: 374px) {
+          .orbit-pill {
+            padding: 2px 5px !important;
+            gap: 2px !important;
           }
         }
       `}</style>

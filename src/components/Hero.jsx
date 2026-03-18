@@ -71,8 +71,6 @@ export default function Hero() {
       style={{
         position: "relative", paddingTop: 160, paddingBottom: 60,
         overflow: "hidden", minHeight: "100vh",
-        background: "var(--white)",
-        color: "var(--ink)"
       }}
     >
       {/* Video Background */}
@@ -123,9 +121,9 @@ export default function Hero() {
             style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}
           >
             <button
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", fontSize: 15, fontWeight: 700, fontFamily: "var(--sans)", borderRadius: 100, border: "none", cursor: "pointer", background: "#00174A", color: "#fff", transition: "all 0.35s ease", boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#0B3D91"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 23, 74, 0.35)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#00174A"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)"; }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", fontSize: 15, fontWeight: 700, fontFamily: "var(--sans)", borderRadius: 100, border: "none", cursor: "pointer", background: "var(--accent)", color: "#fff", transition: "all 0.35s ease", boxShadow: "0 4px 16px rgba(211,85,40,0.2)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--accent-dark)"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(211,85,40,0.35)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(211,85,40,0.2)"; }}
             >
               Start building free <ArrowRight size={16} />
             </button>

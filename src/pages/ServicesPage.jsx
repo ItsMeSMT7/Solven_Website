@@ -266,9 +266,9 @@ export default function ServicesPage() {
             >
               
               <button
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", fontSize: 15, fontWeight: 700, fontFamily: "var(--sans)", borderRadius: 100, border: "none", cursor: "pointer", background: "#00174A", color: "#fff", transition: "all 0.35s ease", boxShadow: "0 4px 16px rgba(0, 23, 74, 0.2)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#0B3D91"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 23, 74, 0.35)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#00174A"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 23, 74, 0.2)"; }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "16px 36px", fontSize: 15, fontWeight: 700, fontFamily: "var(--sans)", borderRadius: 100, border: "none", cursor: "pointer", background: "var(--accent)", color: "#fff", transition: "all 0.35s ease", boxShadow: "0 4px 16px rgba(211,85,40,0.2)" }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "var(--accent-dark)"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(211,85,40,0.35)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "var(--accent)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(211,85,40,0.2)"; }}
             >
                 Discuss your project <ArrowRight size={16} />
               </button>
@@ -897,9 +897,8 @@ export default function ServicesPage() {
               position: "relative",
               overflow: "hidden",
               borderRadius: 28,
-              /* ── Blue diagonal gradient ── */
               background:
-                "linear-gradient(135deg, #00174A 0%, #0B3D91 40%, #2DA7FF 100%)",
+                "linear-gradient(135deg, #1a0f07, #2d1810, #1a1005)",
               border: "1px solid rgba(255,255,255,0.06)",
             }}
           >
@@ -951,7 +950,7 @@ export default function ServicesPage() {
                 width: 350,
                 height: 350,
                 borderRadius: "50%",
-                background: "rgba(45, 167, 255, 0.20)",
+                background: "rgba(211,85,40,0.12)",
                 filter: "blur(80px)",
                 pointerEvents: "none",
               }}
@@ -966,7 +965,7 @@ export default function ServicesPage() {
                 width: 280,
                 height: 280,
                 borderRadius: "50%",
-                background: "rgba(0, 23, 74, 0.30)",
+                background: "rgba(232,163,23,0.08)",
                 filter: "blur(60px)",
                 pointerEvents: "none",
               }}
@@ -997,7 +996,7 @@ export default function ServicesPage() {
                 <span
                   style={{
                     background:
-                      "linear-gradient(90deg, #ffffff 0%, #90C9FF 100%)",
+                      "linear-gradient(135deg, var(--accent), var(--amber))",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -1034,13 +1033,13 @@ export default function ServicesPage() {
                   className="btn-fill"
                   style={{
                     background: "#fff",
-                    color: "#00174A",
+                    color: "var(--ink)",
                     textDecoration: "none",
                     transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.boxShadow =
-                      "0 8px 32px rgba(45, 167, 255, 0.28)";
+                      "0 8px 28px rgba(255,255,255,0.15)";
                     e.currentTarget.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
